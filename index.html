@@ -4,160 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Xhol - Jeu de Cartes</title>
-
-<style>
-/* ---------------- BODY ---------------- */
-body {
-    font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background: linear-gradient(160deg,#2c2c2c,#1a1a1a);
-    color: #f0f0f0;
-    margin:0;
-    padding:10px;
-}
-
-/* ---------------- TITRES ---------------- */
-h1,h2,h3,h4 {
-    color:#FF3B30;
-    margin-bottom:10px;
-}
-
-/* ---------------- BOUTONS ---------------- */
-button {
-    background: linear-gradient(145deg,#555,#222);
-    color:#fff;
-    border:none;
-    padding:10px 14px;
-    border-radius:14px;
-    margin:3px;
-    cursor:pointer;
-    transition:0.3s;
-    box-shadow:0 4px 8px rgba(0,0,0,0.3);
-}
-button:hover {
-    background:linear-gradient(145deg,#FF3B30,#AA0000);
-    box-shadow:0 6px 12px rgba(0,0,0,0.4);
-}
-
-/* ---------------- LISTES ---------------- */
-ul { list-style:none; padding-left:0; }
-li { padding:4px 0; }
-
-/* ---------------- CONTAINERS ---------------- */
-#lobby,.gameTable {
-    max-width:1000px;
-    margin:auto;
-    background: rgba(50,50,50,0.85);
-    padding:20px;
-    border-radius:20px;
-    margin-bottom:20px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.6);
-}
-
-/* ---------------- MAIN HAND ---------------- */
-.playerHand {
-    position:relative;
-    display:flex;
-    flex-wrap:wrap;
-    margin:5px;
-    vertical-align:top;
-    justify-content:center;
-}
-
-/* ---------------- CARTES ---------------- */
-.cardFront,.cardBack {
-    width:60px;
-    height:90px;
-    border-radius:10px;
-    background: linear-gradient(145deg,#888,#555);
-    color:#fff;
-    text-align:center;
-    line-height:90px;
-    margin:2px;
-    font-weight:bold;
-    cursor:pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-}
-.cardFront:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow:0 6px 15px rgba(0,0,0,0.6);
-    background: linear-gradient(145deg,#FF3B30,#AA0000);
-}
-.cardBack {
-    background: linear-gradient(145deg,#333,#111);
-    color:#FF3B30;
-    font-weight:bold;
-}
-.joker {
-    background: linear-gradient(145deg,#FFD700,#FFDC70);
-    color:#111;
-    font-weight:bold;
-}
-
-/* ---------------- TABLE ---------------- */
-.tableCenter {
-    text-align:center;
-    display:flex;
-    justify-content:center;
-    flex-wrap:wrap;
-    margin-bottom:10px;
-}
-
-/* ---------------- CONTROLES ---------------- */
-.controls {
-    text-align:center;
-    margin-top:10px;
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-}
-
-/* ---------------- SCOREBOARD ---------------- */
-#scoreBoard {
-    background: rgba(255,255,255,0.05);
-    padding:10px;
-    border-radius:10px;
-    margin-top:10px;
-}
-
-/* ---------------- INPUTS ---------------- */
-input {
-    padding:6px 8px;
-    border-radius:6px;
-    border:none;
-    margin:3px;
-    width:90%;
-    max-width:200px;
-}
-
-/* ---------------- RESPONSIVE ---------------- */
-@media (max-width:600px) {
-    .cardFront,.cardBack{width:40px;height:60px;line-height:60px;}
-}
-</style>
-
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Jeu de Cartes <span style="color:#FF3B30">Xhol</span></h1>
+<h1>Xhol - Jeu de Cartes</h1>
 
-<!-- ---------------- AUTH ---------------- -->
+<!-- Authentification -->
 <div id="auth">
     <h2>Connexion</h2>
-    <button id="googleLogin">Se connecter avec Gmail</button>
-    <button id="icloudLogin">Se connecter avec iCloud</button>
+    <button id="googleLogin">Connexion Gmail</button>
+    <button id="icloudLogin">Connexion iCloud</button>
     <hr>
     <h3>Connexion interne</h3>
-    <input type="text" id="localUser" placeholder="Nom d'utilisateur"><br>
-    <input type="password" id="localPass" placeholder="Mot de passe"><br>
+    <input type="text" id="localUser" placeholder="Nom d'utilisateur">
+    <input type="password" id="localPass" placeholder="Mot de passe">
     <button id="localLoginBtn">Connexion</button>
     <button id="localRegisterBtn">Créer un compte</button>
     <p id="authStatus"></p>
 </div>
 
-<!-- ---------------- LOBBY ---------------- -->
+<!-- Lobby -->
 <div id="lobby" class="hidden">
     <h2>Lobby</h2>
-
     <div>
         <h3>Créer une table</h3>
         <label>Nombre de joueurs (2–6) :</label>
@@ -169,21 +38,15 @@ input {
         </select>
         <button id="createTableBtn">Créer la table</button>
     </div>
-
     <hr>
-    <div>
-        <h3>Tables disponibles</h3>
-        <ul id="tablesList"></ul>
-    </div>
-
+    <h3>Tables disponibles</h3>
+    <ul id="tablesList"></ul>
     <hr>
-    <div>
-        <h3>Classement global</h3>
-        <ul id="globalRanking"></ul>
-    </div>
+    <h3>Classement global</h3>
+    <ul id="globalRanking"></ul>
 </div>
 
-<!-- ---------------- GAME ---------------- -->
+<!-- Table de jeu -->
 <div id="gameContainer" class="hidden">
     <h2>Table de jeu</h2>
     <div class="tableCenter">
@@ -191,211 +54,19 @@ input {
         <div id="cutCard" class="cardBack hidden"></div>
         <div id="discardPile" class="cardBack">Défausse</div>
     </div>
-
     <div id="playersContainer"></div>
-
     <div class="controls">
         <button id="drawDeck">Piocher</button>
         <button id="takeDiscard">Ramasser Défausse</button>
         <button id="declareXhol">Xhol !</button>
     </div>
-
     <div id="status">Statut</div>
-
     <div id="scoreBoard" class="hidden">
         <h4>Classement</h4>
         <ul id="scoreList"></ul>
     </div>
 </div>
 
-<script>
-/* ---------------- USERS ---------------- */
-let users=JSON.parse(localStorage.getItem('xholUsers')||"{}");
-let playerName="";
-
-function saveUsers(){ localStorage.setItem('xholUsers',JSON.stringify(users)); }
-
-document.getElementById('localRegisterBtn').onclick=()=>{
-    const u=document.getElementById('localUser').value.trim();
-    const p=document.getElementById('localPass').value.trim();
-    if(!u||!p){ alert("Nom et mot de passe requis"); return; }
-    if(users[u]){ alert("Utilisateur existe déjà"); return; }
-    users[u]=p; saveUsers(); alert("Compte créé"); 
-};
-
-document.getElementById('localLoginBtn').onclick=()=>{
-    const u=document.getElementById('localUser').value.trim();
-    const p=document.getElementById('localPass').value.trim();
-    if(users[u]&&users[u]===p){ playerName=u; loginSuccess(); }
-    else alert("Utilisateur ou mot de passe incorrect");
-};
-
-document.getElementById('googleLogin').onclick=()=>{
-    playerName=prompt("Entrez votre email Gmail:");
-    if(playerName) loginSuccess();
-};
-
-document.getElementById('icloudLogin').onclick=()=>{
-    playerName=prompt("Entrez votre email iCloud:");
-    if(playerName) loginSuccess();
-};
-
-function loginSuccess(){
-    document.getElementById('auth').classList.add('hidden');
-    document.getElementById('lobby').classList.remove('hidden');
-    document.getElementById('authStatus').textContent="Connecté : "+playerName;
-}
-
-/* ---------------- LOBBY & TABLES ---------------- */
-let tables=[]; let currentTable=null;
-
-document.getElementById('createTableBtn').onclick=()=>{
-    const numPlayers=parseInt(document.getElementById('numPlayers').value);
-    const targetScore=parseInt(document.getElementById('targetScore').value);
-    const tableId="table"+tables.length;
-    const table={
-        id:tableId,
-        maxPlayers:numPlayers,
-        targetScore:targetScore,
-        players:[],
-        hands:[],
-        deck:[],
-        discardPile:[],
-        scores:[],
-        currentPlayer:0,
-        turnTimer:null,
-        TURN_TIME_LIMIT:60000
-    };
-    tables.push(table);
-    renderTables();
-};
-
-function renderTables(){
-    const ul=document.getElementById('tablesList'); ul.innerHTML="";
-    tables.forEach(t=>{
-        const li=document.createElement('li');
-        li.textContent=Table ${t.id} - ${t.players.length}/${t.maxPlayers} joueurs - Score cible: ${t.targetScore};
-        const btn=document.createElement('button'); btn.textContent="Rejoindre";
-        btn.onclick=()=>joinTable(t.id);
-        li.appendChild(btn); ul.appendChild(li);
-    });
-}
-
-function joinTable(id){
-    const table=tables.find(t=>t.id===id);
-    if(!table) return alert("Table introuvable");
-    if(table.players.length>=table.maxPlayers) return alert("Table complète");
-    table.players.push(playerName); table.scores.push(0);
-    currentTable=table;
-    startGame(table);
-    alert("Vous avez rejoint la table "+table.id);
-}
-
-/* ---------------- JEU COMPLET ---------------- */
-function startGame(table){
-    document.getElementById('lobby').classList.add('hidden');
-    document.getElementById('gameContainer').classList.remove('hidden');
-
-    table.deck=createDeck();
-    table.hands=Array(table.maxPlayers).fill(0).map(()=>[]);
-    distributeCards(table); 
-    renderHands(table);
-    updateStatus("Tour de "+table.players[table.currentPlayer]);
-    startTurnTimer(table);
-}
-
-function createDeck(){
-    const d=[]; 
-    const symbols=['♠','♥','♦','♣']; 
-    const values=[2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
-    for(let p=0;p<2;p++){ 
-        for(let s of symbols){ 
-            for(let v of values)d.push({symbol:s,value:v});
-        } 
-        d.push({symbol:'JOKER',value:'JOKER'}); 
-        d.push({symbol:'JOKER',value:'JOKER'});
-    }
-    return d.sort(()=>Math.random()-0.5);
-}
-
-function distributeCards(table){
-    for(let i=0;i<table.maxPlayers;i++){
-        for(let j=0;j<10;j++){ table.hands[i].push(table.deck.pop()); }
-    }
-    table.hands[0].push(table.deck.pop());
-    table.discardPile.push(table.hands[0].pop());
-}
-
-function renderHands(table){
-    const container=document.getElementById('playersContainer'); container.innerHTML="";
-    table.hands.forEach((hand,p)=>{
-        if(!hand) return;
-        const div=document.createElement('div'); div.className='playerHand';
-        const name=document.createElement('div'); name.textContent=table.players[p]; name.style.color='#FF3B30';
-        div.appendChild(name);
-        hand.forEach((c,idx)=>{
-            const cd=document.createElement('div');
-            cd.className=c.symbol==='JOKER'?'cardFront joker':'cardFront';
-            cd.textContent=c.value+c.symbol;
-            if(p===table.currentPlayer){ cd.onclick=()=>discardCard(table,idx);}
-            div.appendChild(cd);
-        });
-        container.appendChild(div);
-    });
-    renderDiscard(table);
-    renderScoreBoard(table);
-}
-
-function renderDiscard(table){
-    const d=document.getElementById('discardPile');
-    if(table.discardPile.length===0){ d.textContent="Défausse"; return; }
-    const last=table.discardPile[table.discardPile.length-1]; d.textContent=last.value+last.symbol;
-}
-
-/* ---------------- BOUTONS PIOCHE & RAMASSER ---------------- */
-document.getElementById('drawDeck').onclick=()=>{
-    const table=currentTable; if(!table) return;
-    const card=table.deck.pop(); if(!card) return alert("Deck vide");
-    table.hands[table.currentPlayer].push(card); renderHands(table);
-    alert("Carte piochée");
-};
-
-document.getElementById('takeDiscard').onclick=()=>{
-    const table=currentTable; if(!table) return;
-    if(table.discardPile.length===0) return alert("Défausse vide");
-    const card=table.discardPile.pop(); table.hands[table.currentPlayer].push(card);
-    renderHands(table); alert("Carte ramassée de la défausse");
-};
-
-/* ---------------- DISCARDS ---------------- */
-function discardCard(table,idx){
-    clearTimeout(table.turnTimer);
-    const card=table.hands[table.currentPlayer].splice(idx,1)[0];
-    table.discardPile.push(card);
-    renderHands(table);
-    if(checkXhol(table,table.currentPlayer)) return;
-    nextTurn(table);
-}
-
-/* ---------------- TOURS & TIMER ---------------- */
-function nextTurn(table){
-    table.currentPlayer=(table.currentPlayer+1)%table.maxPlayers;
-    updateStatus("Tour de "+table.players[table.currentPlayer]);
-    startTurnTimer(table);
-}
-
-function startTurnTimer(table){
-    clearTimeout(table.turnTimer);
-    table.turnTimer=setTimeout(()=>banPlayer(table,table.currentPlayer),table.TURN_TIME_LIMIT);
-}
-
-function banPlayer(table,player){
-    alert(table.players[player]+" n'a pas joué et est banni !");
-    table.hands[player]=null;
-    table.scores[player]+=100;
-    nextTurn(table);
-}
-
-function updateStatus(msg){ document.getElementById('status').textContent=msg; }
-
-/* ---------------- XHOL & SCORES ----------------
+<script src="script.js"></script>
+</body>
+</html>
