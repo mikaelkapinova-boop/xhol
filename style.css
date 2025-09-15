@@ -1,56 +1,251 @@
-/* RESET & GLOBAL */
-* { margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif; }
-body { background:#1C1C1E; color:#F2F2F7; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px; }
-h1,h2,h3,h4 { margin-bottom:10px; }
+/* -------------------- RESET & GLOBAL -------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
 
-/* AUTH */
-#auth { background:#2C2C2E; padding:20px; border-radius:12px; width:100%; max-width:400px; text-align:center; margin-bottom:20px; }
-#auth input { width:90%; padding:10px; margin:5px 0; border-radius:8px; border:none; }
-#auth button { padding:10px 15px; margin:5px; border:none; border-radius:8px; background:#FF3B30; color:white; cursor:pointer; transition:all 0.2s; }
-#auth button:hover { background:#FF453A; }
+body {
+    background: #1C1C1E;
+    color: #F2F2F7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
 
-/* LOBBY */
-#lobby { width:100%; max-width:800px; background:#2C2C2E; padding:20px; border-radius:12px; margin-bottom:20px; }
-#tablesList,#globalRanking { list-style:none; margin-top:10px; }
-#tablesList li,#globalRanking li { background:#3A3A3C; padding:10px; border-radius:8px; margin-bottom:5px; display:flex; justify-content:space-between; align-items:center; }
-#tablesList li button { background:#FF9500; color:white; border:none; border-radius:8px; padding:5px 10px; cursor:pointer; }
-#tablesList li button:hover { background:#FFB84D; }
+h1, h2, h3, h4 {
+    margin-bottom: 10px;
+}
 
-/* GAME */
-#gameContainer { width:100%; max-width:1000px; display:flex; flex-direction:column; align-items:center; }
-.tableCenter { display:flex; justify-content:center; margin-bottom:20px; }
-.cardBack,.cardFront { width:60px; height:90px; border-radius:8px; background:linear-gradient(145deg,#3A3A3C,#2C2C2E); display:flex; justify-content:center; align-items:center; color:white; font-weight:bold; margin:5px; box-shadow:0 4px 6px rgba(0,0,0,0.4); transition: transform 0.2s, box-shadow 0.2s; cursor:pointer; }
-.cardFront.joker { background:linear-gradient(145deg,#FF3B30,#FF2D55); }
-.cardBack:hover,.cardFront:hover { transform:translateY(-5px); box-shadow:0 8px 12px rgba(0,0,0,0.6); }
+/* -------------------- AUTH -------------------- */
+#auth {
+    background: #2C2C2E;
+    padding: 20px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 20px;
+}
 
-/* PLAYER HANDS */
-.playerHand { display:flex; flex-direction:column; align-items:center; margin:10px; }
-.playerHand .cardFront { margin-top:5px; }
+#auth input {
+    width: 90%;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 8px;
+    border: none;
+}
 
-/* CONTROLS */
-.controls { margin-top:20px; }
-.controls button { padding:10px 20px; margin:0 10px; border:none; border-radius:12px; background:#FF3B30; color:white; cursor:pointer; transition:all 0.2s; }
-.controls button:hover { background:#FF453A; }
+#auth button {
+    padding: 10px 15px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background: #FF3B30;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
 
-/* STATUS & SCORE */
-#status { margin-top:20px; font-size:18px; font-weight:bold; }
-#scoreBoard { margin-top:20px; width:300px; }
-#scoreBoard ul { list-style:none; }
-#scoreBoard li { background:#3A3A3C; padding:5px 10px; margin-bottom:5px; border-radius:8px; }
+#auth button:hover {
+    background: #FF453A;
+}
 
-/* HIDDEN */
-.hidden { display:none; }
+/* -------------------- LOBBY -------------------- */
+#lobby {
+    width: 100%;
+    max-width: 800px;
+    background: #2C2C2E;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
 
-/* RESPONSIVE */
-@media screen and (max-width:768px){
-.tableCenter{flex-wrap:wrap;}
-.playerHand{flex-direction:row;flex-wrap:wrap;justify-content:center;}
-.controls button{margin:5px 0;width:80%;}
-#gameContainer{width:100%;}
-#lobby{width:100%;}
-#auth{width:90%;padding:15px;}
-#tablesList li,#globalRanking li{flex-direction:column;align-items:flex-start;}
-#tablesList li button{width:100%;margin-top:5px;}
-.cardBack,.cardFront{width:50px;height:75px;margin:3px;font-size:12px;}
-#scoreBoard{width:90%;}
+#tablesList,
+#globalRanking {
+    list-style: none;
+    margin-top: 10px;
+}
+
+#tablesList li,
+#globalRanking li {
+    background: #3A3A3C;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#tablesList li button {
+    background: #FF9500;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+#tablesList li button:hover {
+    background: #FFB84D;
+}
+
+/* -------------------- GAME -------------------- */
+#gameContainer {
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.tableCenter {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.cardBack,
+.cardFront {
+    width: 60px;
+    height: 90px;
+    border-radius: 8px;
+    background: linear-gradient(145deg, #3A3A3C, #2C2C2E);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    margin: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.cardFront.joker {
+    background: linear-gradient(145deg, #FF3B30, #FF2D55);
+}
+
+.cardBack:hover,
+.cardFront:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* -------------------- PLAYER HANDS -------------------- */
+.playerHand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+}
+
+.playerHand .cardFront {
+    margin-top: 5px;
+}
+
+/* -------------------- CONTROLS -------------------- */
+.controls {
+    margin-top: 20px;
+}
+
+.controls button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 12px;
+    background: #FF3B30;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.controls button:hover {
+    background: #FF453A;
+}
+
+/* -------------------- STATUS & SCORE -------------------- */
+#status {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#scoreBoard {
+    margin-top: 20px;
+    width: 300px;
+}
+
+#scoreBoard ul {
+    list-style: none;
+}
+
+#scoreBoard li {
+    background: #3A3A3C;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+}
+
+/* -------------------- HIDDEN -------------------- */
+.hidden {
+    display: none;
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+@media screen and (max-width: 768px) {
+    .tableCenter {
+        flex-wrap: wrap;
+    }
+
+    .playerHand {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .controls button {
+        margin: 5px 0;
+        width: 80%;
+    }
+
+    #gameContainer {
+        width: 100%;
+    }
+
+    #lobby {
+        width: 100%;
+    }
+
+    #auth {
+        width: 90%;
+        padding: 15px;
+    }
+
+    #tablesList li,
+    #globalRanking li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #tablesList li button {
+        width: 100%;
+        margin-top: 5px;
+    }
+
+    .cardBack,
+    .cardFront {
+        width: 50px;
+        height: 75px;
+        margin: 3px;
+        font-size: 12px;
+    }
+
+    #scoreBoard {
+        width: 90%;
+    }
 }
