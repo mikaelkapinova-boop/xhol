@@ -7,7 +7,7 @@
   <title>Msplomberie - Jeux de Cartes Multijoueur</title>
 
   <style>
-    /* Reset et global */
+    /* RESET et styles globaux */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,7 +15,7 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Roboto', Arial, sans-serif;
       background-color: #1b1120;
       color: white;
       min-height: 100vh;
@@ -29,7 +29,7 @@
       text-decoration: none;
     }
 
-    /* HEADER */
+    /* HEADER commun */
     header {
       background-color: #2a1f34;
       padding: 15px 30px;
@@ -38,6 +38,7 @@
       align-items: center;
       box-shadow: 0 0 12px #5d3e84;
       color: #e1cfff;
+      user-select: none;
     }
 
     header .user-info {
@@ -52,7 +53,6 @@
       border-radius: 50%;
       border: 2px solid #ffcf19;
       object-fit: cover;
-      user-select: none;
     }
 
     header .user-info .username {
@@ -65,13 +65,7 @@
       gap: 12px;
       font-size: 0.9rem;
       color: #d7caef;
-    }
-
-    header .user-stats span {
-      display: flex;
       align-items: center;
-      gap: 3px;
-      user-select: none;
     }
 
     nav a {
@@ -82,6 +76,7 @@
       padding: 6px 14px;
       border-radius: 6px;
       transition: background 0.3s ease;
+      cursor: pointer;
     }
 
     nav a:hover {
@@ -89,202 +84,14 @@
       color: #230f00;
     }
 
-    /* MAIN avec modes */
-    main#modes {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #120817;
-      padding: 50px 20px;
-    }
-
-    .modes {
-      display: flex;
-      gap: 60px;
-      max-width: 720px;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .mode-card {
-      background-color: #382955;
-      border-radius: 18px;
-      box-shadow: 0 6px 24px #5e4984cc;
-      width: 280px;
-      cursor: pointer;
-      text-align: center;
-      padding: 40px 30px 32px;
-      border: 2px solid #4e3a70;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-      user-select: none;
-    }
-
-    .mode-card:hover {
-      transform: scale(1.06);
-      border-color: #ffcf19;
-      box-shadow: 0 6px 40px #ffcf19cc;
-    }
-
-    .mode-card img {
-      height: 72px;
-      margin-bottom: 20px;
-      filter: drop-shadow(0 1px 3px #0009);
-      user-select: none;
-    }
-
-    .mode-title {
-      font-size: 1.65rem;
-      font-weight: 700;
-      color: #ffcf19;
-      margin-bottom: 14px;
-      text-shadow: 0 0 16px #f0d63260;
-      user-select: none;
-    }
-
-    .mode-desc {
-      font-size: 1.1rem;
-      color: #c7b8ec;
-      line-height: 1.3;
-      user-select: none;
-    }
-
-    /* TABLE DE JEU */
-    main#game {
-      flex: 1;
-      background: #120817;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 20px 60px;
-      min-height: 100vh;
-    }
-
-    .game-table {
-      position: relative;
-      margin: 30px auto 10px;
-      background: #2e1e3a;
-      border-radius: 26px;
-      width: 900px;
-      max-width: 95vw;
-      padding: 36px 28px 60px;
-      box-shadow: 0 0 32px #5e4984cc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-    }
-
-    .table-areas {
-      width: 100%;
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 34px;
-    }
-
-    .drop-zone {
-      width: 45%;
-      min-height: 140px;
-      background: #412e57;
-      border-radius: 12px;
-      box-shadow: inset 0 0 12px #7d5cc8aa;
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 8px;
-      padding: 18px 12px;
-      overflow-x: auto;
-      border: 2px dashed #6e4db0;
-      transition: background-color 0.3s ease;
-    }
-
-    .drop-zone.dragover {
-      background-color: #ab89fc33;
-      border-color: #d0b2fd;
-    }
-
-    .player-hand {
-      width: 920px;
-      max-width: 95vw;
-      margin-top: 12px;
-      padding: 15px 5px;
-      background: #3a285d;
-      border-radius: 14px;
-      box-shadow: 0 4px 18px #624f90cc;
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      user-select: none;
-    }
-
-    .card {
-      width: 70px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
-      cursor: grab;
-      user-select: none;
-      transition: box-shadow 0.25s ease;
-      border: 1px solid transparent;
-      flex: 0 0 auto;
-      background-size: cover;
-      background-position: center;
-      height: 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 6px 8px;
-      font-weight: 700;
-    }
-
-    .card.dragging {
-      opacity: 0.6;
-      box-shadow: 0 0 30px 6px #ffcf19;
-      cursor: grabbing;
-    }
-
-    .card.red {
-      color: #d33a3a;
-    }
-
-    #xholBtn {
-      margin-top: 30px;
-      background: #ffd700;
-      color: #210;
-      border-radius: 10px;
-      border: none;
-      padding: 14px 60px;
-      font-size: 1.4rem;
-      font-weight: bold;
-      opacity: 0.5;
-      cursor: not-allowed;
-      user-select: none;
-      transition: opacity 0.25s ease;
-    }
-
-    #xholBtn.enabled {
-      opacity: 1;
-      cursor: pointer;
-    }
-
-    /* FOOTER */
-    footer {
-      background: #2e2440;
-      padding: 16px;
-      text-align: center;
-      font-size: 0.9rem;
-      color: #c1b2e5cc;
-      user-select: none;
-    }
-
-    /* AUTH SECTION */
+    /* FORMULAIRES AUTH */
     #auth-section {
       min-height: 100vh;
+      background: #170e22;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: #170e22;
-      flex-direction: column;
       padding: 50px 20px;
       gap: 24px;
     }
@@ -293,9 +100,9 @@
       background: #362c51;
       border-radius: 18px;
       padding: 36px 34px;
-      box-shadow: 0 5px 38px #4e3d74bb;
       width: 360px;
       max-width: 88vw;
+      box-shadow: 0 5px 38px #4e3d74bb;
       color: white;
       user-select: none;
     }
@@ -310,10 +117,10 @@
     }
 
     label {
+      display: block;
+      margin-bottom: 6px;
       font-weight: 600;
       font-size: 1rem;
-      margin-bottom: 6px;
-      display: block;
       color: #c6b7f3;
     }
 
@@ -327,8 +134,6 @@
       outline-offset: 2px;
       outline-color: #a792e0;
       margin-bottom: 18px;
-      font-family: inherit;
-      user-select: text;
     }
 
     input[type="submit"],
@@ -370,7 +175,6 @@
       font-size: 0.9rem;
       min-height: 20px;
       margin-bottom: 6px;
-      user-select: none;
     }
 
     .success-msg {
@@ -378,18 +182,305 @@
       font-weight: 700;
       font-size: 0.9rem;
       margin-top: 6px;
-      user-select: none;
     }
 
     .hidden {
       display: none !important;
+    }
+
+    /* LOBBY / MODE DE JEU */
+    main#modes {
+      flex: 1;
+      background: #120817;
+      padding: 50px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .modes-header {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .user-info-lobby {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .user-info-lobby img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid #ffcf19;
+      object-fit: cover;
+    }
+
+    .user-info-lobby .username {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #ffc75e;
+    }
+
+    .user-stats-lobby {
+      display: flex;
+      gap: 15px;
+      font-size: 0.95rem;
+      color: #d3c7f8;
+      align-items: center;
+      user-select: none;
+    }
+
+    nav#lobby-nav a {
+      background: #382a5c;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 10px 24px;
+      margin-left: 15px;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+    }
+
+    nav#lobby-nav a:hover {
+      background-color: #ffc75e;
+      color: #1a0700;
+    }
+
+    .modes {
+      max-width: 720px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+    }
+
+    .mode-card {
+      background-color: #3a2860;
+      width: 280px;
+      border-radius: 22px;
+      padding: 40px 28px;
+      text-align: center;
+      box-shadow: 0 0 30px #5b43a1aa;
+      border: 2px solid #634b9a;
+      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s;
+      user-select: none;
+    }
+
+    .mode-card:hover,
+    .mode-card:focus {
+      border-color: #ffc75e;
+      transform: scale(1.06);
+      box-shadow: 0 0 48px #ffdb79cc;
+      outline: none;
+    }
+
+    .mode-card img {
+      height: 80px;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 0 6px #271a54bb);
+      user-select: none;
+    }
+
+    .mode-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #ffd964;
+      margin-bottom: 10px;
+      letter-spacing: 0.04em;
+      text-shadow: 0 0 18px #ffd964bb;
+    }
+
+    .mode-desc {
+      font-size: 1.1rem;
+      color: #d7c7f8;
+      line-height: 1.4;
+      user-select: none;
+    }
+
+    /* TABLE DE JEU */
+    main#game {
+      flex: 1;
+      background: #120817;
+      padding: 30px 10px 60px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+    }
+
+    main#game header {
+      width: 100%;
+      max-width: 900px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #cabdf3;
+    }
+
+    main#game header .user-info {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    main#game header .user-info img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 2px solid #ffd964;
+      object-fit: cover;
+      user-select: none;
+    }
+
+    main#game header nav a {
+      color: #e6d8fd;
+      font-weight: 600;
+      padding: 8px 14px;
+      background: #3a2a5d;
+      border-radius: 8px;
+      margin-left: 17px;
+      transition: background-color 0.3s ease;
+      cursor: pointer;
+      user-select: none;
+      text-decoration: none;
+    }
+
+    main#game header nav a:hover {
+      background-color: #ffd964;
+      color: #361c00;
+    }
+
+    .game-table {
+      background-color: #3a2c58;
+      border-radius: 26px;
+      padding: 36px 32px 56px;
+      max-width: 900px;
+      width: 95vw;
+      box-shadow: 0 0 36px #6d58abcc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .table-areas {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 36px;
+      gap: 14px;
+    }
+
+    .drop-zone {
+      background-color: #512f82;
+      border-radius: 14px;
+      min-height: 140px;
+      flex-grow: 1;
+      padding: 18px 12px;
+      box-shadow: inset 0 0 16px #9169c4aa;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+      gap: 8px;
+      border: 2px dashed #a788e6;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      cursor: default;
+    }
+
+    .drop-zone.dragover {
+      background-color: #cca7ff44;
+      border-color: #d3baff;
+    }
+
+    .player-hand {
+      width: 100%;
+      max-width: 900px;
+      background-color: #44136f;
+      border-radius: 16px;
+      padding: 16px 14px;
+      box-shadow: 0 3px 14px #573686aa;
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      user-select: none;
+      cursor: default;
+      min-height: 110px;
+    }
+
+    .card {
+      width: 72px;
+      height: 100px;
+      background-color: #160d2a;
+      border-radius: 10px;
+      border: 2px solid transparent;
+      box-shadow: 0 3px 14px rgb(5 5 5 / 0.8);
+      padding: 6px 8px;
+      font-weight: 700;
+      user-select: none;
+      cursor: grab;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+    .card.red {
+      color: #e44a3a;
+    }
+
+    .card.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+      box-shadow: 0 0 36px 8px #ffd964;
+    }
+
+    #xholBtn {
+      margin-top: 30px;
+      background: #ffd964;
+      color: #210;
+      border-radius: 12px;
+      border: none;
+      padding: 16px 70px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      opacity: 0.45;
+      cursor: not-allowed;
+      user-select: none;
+      transition: opacity 0.25s ease;
+      box-shadow: 0 0 18px #ccaaffaa;
+    }
+
+    #xholBtn.enabled {
+      opacity: 1;
+      cursor: pointer;
+      box-shadow: 0 0 28px 2px #d5bc66ff;
+    }
+
+    /* FOOTER */
+    footer {
+      background: #2e2440;
+      padding: 20px;
+      font-size: 1rem;
+      color: #c1b2e5cc;
+      text-align: center;
+      user-select: none;
     }
   </style>
 </head>
 
 <body>
 
-  <!-- Authentification -->
+  <!-- SECTION AUTHENTIFICATION -->
   <section id="auth-section">
     <article id="login-box" class="auth-box">
       <h2>Connexion</h2>
@@ -418,20 +509,20 @@
     </article>
   </section>
 
-  <!-- ENTRER EN JEU : page d'accueil -->
+  <!-- PAGE LOBBY AVANT JEU -->
   <main id="modes" class="hidden">
     <header>
-      <div class="user-info" role="region" aria-label="Profil utilisateur">
+      <div class="user-info user-info-lobby" role="region" aria-label="Profil utilisateur">
         <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar utilisateur" id="user-avatar" />
         <span class="username" id="user-pseudo">pseudo</span>
-        <div class="user-stats">
+        <div class="user-stats user-stats-lobby">
           <span title="Niveau">Niv. <strong id="user-level">1</strong></span>
           <span title="Gemmes">💎 <strong id="user-gems">35</strong></span>
           <span title="Pièces">🪙 <strong id="user-coins">70780</strong></span>
         </div>
       </div>
 
-      <nav aria-label="Menu principal">
+      <nav id="lobby-nav" aria-label="Menu principal">
         <a href="#" title="Accueil" onclick="event.preventDefault()">Accueil</a>
         <a href="#" title="Déconnexion" onclick="logout()">Déconnexion</a>
       </nav>
@@ -453,7 +544,7 @@
     </div>
   </main>
 
-  <!-- TABLE DE JEU -->
+  <!-- PAGE TABLE DE JEU -->
   <main id="game" class="hidden" role="main" aria-label="Table de jeu">
     <header>
       <div class="user-info" role="region" aria-label="Profil utilisateur">
@@ -464,6 +555,7 @@
           <span title="Gemmes">💎 <strong id="user-gems-game">35</strong></span>
           <span title="Pièces">🪙 <strong id="user-coins-game">70780</strong></span>
         </div>
+
         <nav aria-label="Menu principal" style="margin-left:auto;">
           <a href="#" title="Quitter la partie" onclick="quitGame()">Quitter la partie</a>
           <a href="#" title="Déconnexion" onclick="logout()">Déconnexion</a>
@@ -472,14 +564,13 @@
     </header>
 
     <div class="game-table" id="game-table">
-
       <div class="table-areas">
         <div id="drop1" class="drop-zone" aria-label="Zone de pose 1"></div>
         <div id="drop2" class="drop-zone" aria-label="Zone de pose 2"></div>
       </div>
 
       <div id="player-hand" class="player-hand" aria-label="Main du joueur">
-        <!-- Les cartes seront injectées ici -->
+        <!-- Cartes injectées ici -->
       </div>
 
       <button id="xholBtn" disabled>Xhol</button>
@@ -491,35 +582,37 @@
   </footer>
 
   <script>
-    // Gestion simplifiée des comptes utilisateurs en local storage comme avant
+    // ----- Gestion des comptes -----
     function getUsers() {
       let list = localStorage.getItem("msplomberie_accounts");
       return list ? JSON.parse(list) : {};
     }
+
     function saveUsers(accounts) {
       localStorage.setItem("msplomberie_accounts", JSON.stringify(accounts));
     }
+
     function simpleHash(str) {
       return btoa(unescape(encodeURIComponent(str)));
     }
 
-    // Afficher boîtes inscription/connexion
     function showRegister() {
       document.getElementById("login-box").classList.add("hidden");
       document.getElementById("register-box").classList.remove("hidden");
       clearErrors();
     }
+
     function showLogin() {
       document.getElementById("register-box").classList.add("hidden");
       document.getElementById("login-box").classList.remove("hidden");
       clearErrors();
     }
+
     function clearErrors() {
       document.getElementById("login-error").textContent = "";
       document.getElementById("register-error").textContent = "";
     }
 
-    // Connexion
     document.getElementById("login-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const email = this["login-email"].value.trim().toLowerCase();
@@ -540,7 +633,6 @@
       showMainSection();
     });
 
-    // Inscription
     document.getElementById("register-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const email = this["register-email"].value.trim().toLowerCase();
@@ -575,7 +667,7 @@
       showMainSection();
     });
 
-    // Affichage profil (dans lobby et en jeu)
+    // ----- Affichage profil -----
     function loadUserProfile(email) {
       const users = getUsers();
       if (!users[email]) return;
@@ -588,27 +680,27 @@
       document.getElementById("user-gems").textContent = profile.gemmes;
       document.getElementById("user-coins").textContent = profile.pieces;
 
-      // Game
+      // Table jeu
       document.getElementById("user-pseudo-game").textContent = profile.pseudo;
       document.getElementById("user-level-game").textContent = profile.niveau;
       document.getElementById("user-gems-game").textContent = profile.gemmes;
       document.getElementById("user-coins-game").textContent = profile.pieces;
 
       const avatarIndex = (profile.pseudo.charCodeAt(0) + profile.niveau) % 99;
-      // Lobby avatar
-      document.getElementById("user-avatar").src = `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
-      // Game avatar
-      document.getElementById("user-avatar-game").src = `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
+
+      document.getElementById("user-avatar").src =
+        `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
+      document.getElementById("user-avatar-game").src =
+        `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
     }
 
-    // Afficher la page du lobby
+    // ----- Navigation -----
     function showMainSection() {
       document.getElementById("auth-section").style.display = "none";
       document.getElementById("game").classList.add("hidden");
       document.getElementById("modes").classList.remove("hidden");
     }
 
-    // Déconnexion (retour à l’auth)
     function logout() {
       sessionStorage.removeItem("activeUser");
       document.getElementById("auth-section").style.display = "flex";
@@ -617,14 +709,13 @@
       clearErrors();
     }
 
-    // Quitter la partie pour revenir au lobby
     function quitGame() {
       document.getElementById("game").classList.add("hidden");
       document.getElementById("modes").classList.remove("hidden");
       clearGameTable();
     }
 
-    // Chargement session active au chargement page
+    // ----- Chargement session -----
     window.addEventListener("load", () => {
       const activeUser = sessionStorage.getItem("activeUser");
       if (activeUser) {
@@ -633,18 +724,13 @@
       }
     });
 
-    // =======================
-    // LOGIQUE DU JEU & TABLE
-    // =======================
-
-    // Création d’un deck avec 2 paquets sans jokers plus 2 jokers au total
+    // ----- Logique jeu et table -----
     function createDeck() {
       const suits = ['coeur', 'carreau', 'pique', 'trefle'];
       const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R'];
 
       let deck = [];
 
-      // 2 paquets sans jokers
       for (let pack = 0; pack < 2; pack++) {
         for (const suit of suits) {
           for (const value of values) {
@@ -653,14 +739,12 @@
         }
       }
 
-      // 2 jokers seulement au total
       deck.push({ value: 'Joker', suit: 'Joker' });
       deck.push({ value: 'Joker', suit: 'Joker' });
 
       return deck;
     }
 
-    // Création visuelle carte (fond, texte simple)
     function createCardElement(cardObj, id) {
       const div = document.createElement("div");
       div.classList.add("card");
@@ -685,11 +769,11 @@
         div.style.border = `2px solid ${cardColor}`;
         div.style.color = cardColor;
 
-        // Contenu texte haut-gauche et bas-droite
         const topLeft = document.createElement("div");
         topLeft.textContent = `${cardObj.value} ${cardObj.suit === 'coeur' ? '♥' : cardObj.suit === 'carreau' ? '♦' : cardObj.suit === 'pique' ? '♠' : '♣'}`;
         topLeft.style.fontSize = "1.6rem";
         topLeft.style.lineHeight = "1.1";
+
         div.appendChild(topLeft);
 
         const bottomRight = document.createElement("div");
@@ -699,6 +783,7 @@
         bottomRight.style.transform = "rotate(180deg)";
         bottomRight.style.lineHeight = "1.1";
         bottomRight.style.userSelect = "none";
+
         div.appendChild(bottomRight);
       }
       return div;
@@ -706,14 +791,12 @@
 
     let handCardsElements = [];
 
-    // Distribuer 14 cartes mélangées pour la main
     function dealInitialCards(deck) {
       deck = deck.sort(() => Math.random() - 0.5);
       const hand = deck.slice(0, 14);
       return { hand, remainingDeck: deck.slice(14) };
     }
 
-    // Afficher cartes en main
     function renderHandCards(hand) {
       const handDiv = document.getElementById("player-hand");
       handDiv.innerHTML = "";
@@ -726,7 +809,6 @@
       addDragDropListeners();
     }
 
-    // Setup drag & drop
     function addDragDropListeners() {
       handCardsElements.forEach(cardEl => {
         cardEl.addEventListener("dragstart", dragStart);
@@ -802,7 +884,7 @@
 
     xholBtn.addEventListener("click", () => {
       alert("Xhol activé : la main est prête !");
-      // Logique de validation à ajouter ici
+      // Ajoute ici ta logique de contrôle / validation
     });
 
     function clearGameTable() {
@@ -817,6 +899,7 @@
       document.getElementById("modes").classList.add("hidden");
       document.getElementById("game").classList.remove("hidden");
       clearGameTable();
+
       const deck = createDeck();
       const { hand } = dealInitialCards(deck);
       renderHandCards(hand);
@@ -829,6 +912,7 @@
       clearGameTable();
     }
   </script>
+
 </body>
 
 </html>
