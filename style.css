@@ -1,0 +1,110 @@
+/* ---------------- BODY & HEADINGS ---------------- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin:0; padding:0;
+    background: linear-gradient(160deg,#2c2c2c,#1a1a1a);
+    color: #f0f0f0;
+}
+
+h1,h2,h3,h4 { color:#FF3B30; margin-bottom:10px; }
+
+/* ---------------- BUTTONS & INPUTS ---------------- */
+button {
+    background: linear-gradient(145deg,#555,#222);
+    color:#fff;
+    border:none;
+    padding:10px 14px;
+    border-radius:14px;
+    margin:3px;
+    cursor:pointer;
+    transition:0.3s;
+    box-shadow:0 4px 8px rgba(0,0,0,0.3);
+}
+button:hover {
+    background:linear-gradient(145deg,#FF3B30,#AA0000);
+    box-shadow:0 6px 12px rgba(0,0,0,0.4);
+}
+input {
+    padding:6px 8px;
+    border-radius:6px;
+    border:none;
+    margin:3px;
+    width:90%;
+    max-width:200px;
+}
+
+/* ---------------- CONTAINERS ---------------- */
+#lobby, #gameContainer {
+    max-width:1000px;
+    margin:auto;
+    background: rgba(50,50,50,0.85);
+    padding:20px;
+    border-radius:20px;
+    margin-bottom:20px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.6);
+}
+
+/* ---------------- PLAYER HANDS ---------------- */
+.playerHand {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin:5px 0;
+}
+.cardFront, .cardBack {
+    width:60px;
+    height:90px;
+    border-radius:10px;
+    background: linear-gradient(145deg,#888,#555);
+    color:#fff;
+    text-align:center;
+    line-height:90px;
+    margin:2px;
+    font-weight:bold;
+    cursor:pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+}
+.cardFront:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow:0 6px 15px rgba(0,0,0,0.6);
+    background: linear-gradient(145deg,#FF3B30,#AA0000);
+}
+.cardBack {
+    background: linear-gradient(145deg,#333,#111);
+    color:#FF3B30;
+    font-weight:bold;
+}
+.joker {
+    background: linear-gradient(145deg,#FFD700,#FFDC70);
+    color:#111;
+    font-weight:bold;
+}
+.tableCenter {
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-bottom:10px;
+}
+.controls {
+    text-align:center;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    margin-top:10px;
+}
+#scoreBoard {
+    background: rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:10px;
+    margin-top:10px;
+}
+.hidden { display:none; }
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width:600px){
+    .cardFront, .cardBack {
+        width:40px;
+        height:60px;
+        line-height:60px;
+    }
+}
