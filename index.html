@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xhol Pro - Plateforme de Jeu</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #0ea5e9;
+  --primary-dark: #0369a1;
+  --secondary: #8b5cf6;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --dark: #0f172a;
+  --dark-light: #1e293b;
+  --gray: #64748b;
+  --light: #f1f5f9;
+  --white: #ffffff;
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  --gradient-dark: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+  --gradient-card: linear-gradient(145deg, #1e293b, #0f172a);
+  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 35px 60px -12px rgba(0, 0, 0, 0.35);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--gradient-dark);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Animations globales */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(14, 165, 233, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(14, 165, 233, 0.6); }
+}
+
+/* Header */
+.header {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 1rem 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 2rem;
+  font-weight: 900;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--light);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+/* Containers */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  margin-top: 80px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Auth Section */
+.auth-section {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.auth-container {
+  background: var(--gradient-card);
+  border-radius: 24px;
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 480px;
+  width: 100%;
+  animation: fadeInUp 0.6s ease;
+}
+
+.auth-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.auth-subtitle {
+  text-align: center;
+  color: var(--gray);
+  margin-bottom: 2rem;
+}
+
+.auth-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 2rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.auth-tab.active {
+  background: var(--primary);
+  color: white;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--light);
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-input::placeholder {
+  color: var(--gray);
+}
+
+.btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover:before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary);
+}
+
+.social-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.social-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Dashboard */
+.dashboard {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+  min-height: calc(100vh - 80px);
+}
+
+.sidebar {
+  background: var(--gradient-card);
+  border-radius: 20px;
+  padding: 2rem;
+  height: fit-content;
+  position: sticky;
+  top: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-profile {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  font-size: 2rem;
+  color: white;
+  animation: glow 3s ease-in-out infinite;
+}
+
+.user-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.user-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  text-align: center;
+}
+
+.stat-item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+  list-style: none;
+}
+
+.sidebar-nav li {
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  color: var(--light);
+  text-decoration: none;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+  background: var(--primary);
+  transform: translateX(5px);
+}
+
+/* Main Content */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.content-section {
+  background: var(--gradient-card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 0.6s ease;
+}
+
+.section-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-title i {
+  color: var(--primary);
+}
+
+/* Tables Grid */
+.tables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.table-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.table-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 20px 40px rgba(14, 165, 233, 0.2);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.table-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-waiting {
+  background: var(--warning);
+  color: var(--dark);
+}
+
+.status-playing {
+  background: var(--success);
+  color: white;
+}
+
+.status-full {
+  background: var(--danger);
+  color: white;
+}
+
+.table-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.info-item {
+  text-align: center;
+}
+
+.info-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.info-label {
+  font-size: 0.75rem;
+  color: var(--gray);
+  text-transform: uppercase;
+}
+
+.players-list {
+  margin-bottom: 1rem;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.player-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--gradient-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+/* Game Interface */
+.game-interface {
+  background: var(--gradient-card);
+  border-radius: 20px;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 600px;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-timer {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+.game-table {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.table-center {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.deck-card {
+  width: 100px;
+  height: 140px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.deck-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.deck-pile {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+.discard-pile {
+  background: var(--gradient-secondary);
+  color: white;
+}
+
+.deck-count {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+.players-hands {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.player-hand {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.player-hand.current-player {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+  animation: glow 3s ease-in-out infinite;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.player-name {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.player-score {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.card {
+  width: 50px;
+  height: 70px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-size: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.1);
+  z-index: 10;
+}
+
+.card-spades, .card-clubs {
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  color: white;
+}
+
+.card-hearts, .card-diamonds {
+  background: linear-gradient(145deg, #e53e3e, #c53030);
+  color: white;
+}
+
+.card-joker {
+  background: linear-gradient(145deg, #ffd700, #ffed4e);
+  color: #1a202c;
+  animation: pulse 2s infinite;
+}
+
+.card-back {
+  background: var(--gradient-primary);
+  color: white;
+}
+
+/* Game Controls */
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.control-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.btn-draw {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-discard {
+  background: var(--secondary);
+  color: white;
+}
+
+.btn-xhol {
+  background: var(--accent);
+  color: var(--dark);
+}
+
+.btn-pass {
+  background: var(--gray);
+  color: white;
+}
+
+/* Leaderboard */
+.leaderboard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.leaderboard-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--accent);
+  width: 40px;
+  text-align: center;
+}
+
+.rank.first { color: #ffd700; }
+.rank.second { color: #c0c0c0; }
+.rank.third { color: #cd7f32; }
+
+.player-info {
+  flex: 1;
+}
+
+.player-stats {
+  display: flex;
+  gap: 2rem;
+}
+
+.stat {
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .sidebar {
+    position: static;
+  }
+  
+  .tables-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .header-content {
+    padding: 0 1rem;
+  }
+  
+  .nav-links {
+    gap: 1rem;
+  }
+  
+  .auth-container {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  
+  .social-login {
+    grid-template-columns: 1fr;
+  }
+  
+  .game-controls {
+    gap: 0.5rem;
+  }
+  
+  .control-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .players-hands {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-center {
+    gap: 1rem;
+  }
+  
+  .deck-card {
+    width: 80px;
+    height: 110px;
+  }
+}
+
+/* Animations spéciales */
+@keyframes cardFlip {
+  0% { transform: rotateY(0); }
+  50% { transform: rotateY(90deg); }
+  100% { transform: rotateY(0); }
+}
+
+.card-flip {
+  animation: cardFlip 0.6s ease-in-out;
+}
+
+@keyframes dealCard {
+  from {
+    transform: translateX(-100px) rotate(-30deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.card-deal {
+  animation: dealCard 0.5s ease-out;
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 2000;
+}
+
+.modal.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: var(--gradient-card);
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 500px;
+  width: 90%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeInUp 0.3s ease;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--gray);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 100px;
+  right: 2rem;
+  background: var(--gradient-card);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  z-index: 1500;
+  animation: slideInRight 0.3s ease;
+  max-width: 350px;
+}
+
+.notification.success { border-left: 4px solid var(--success); }
+.notification.error { border-left: 4px solid var(--danger); }
+.notification.warning { border-left: 4px solid var(--warning); }
+.notification.info { border-left: 4px solid var(--primary); }
+
+/* Loading States */
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--primary);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn:disabled:hover {
+  box-shadow: none !important;
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-content">
+    <div class="logo">
+      <i class="fas fa-spade"></i> Xhol Pro
+    </div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#" class="nav-link" id="homeLink">Accueil</a>
+      <a href="#" class="nav-link" id="tournamentLink">Tournois</a>
+      <a href="#" class="nav-link" id="leaderboardLink">Classement</a>
+      <a href="#" class="nav-link" id="profileLink">Profil</a>
+      <button class="btn btn-secondary" id="logoutBtn" style="display: none;">
+        <i class="fas fa-sign-out-alt"></i> Déconnexion
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Auth Section -->
+<section class="auth-section" id="authSection">
+  <div class="auth-container">
+    <h1 class="auth-title">Bienvenue sur Xhol Pro</h1>
+    <p class="auth-subtitle">La plateforme de jeu de cartes ultime</p>
+    
+    <div class="auth-tabs">
+      <div class="auth-tab active" data-tab="login">Connexion</div>
+      <div class="auth-tab" data-tab="register">Inscription</div>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Email ou Nom d'utilisateur</label>
+        <input type="text" class="form-input" placeholder="Votre email ou nom d'utilisateur" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" placeholder="Votre mot de passe" required>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-sign-in-alt"></i> Se connecter
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="registerForm" class="auth-form hidden">
+      <div class="form-group">
+        <label class="form-label">Nom d'utilisateur</label>
+        <input type="text" class="form-input" placeholder="Choisissez un nom d'utilisateur" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="votre@email.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" placeholder="Choisissez un mot de passe fort" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirmer le mot de passe</label>
+        <input type="password" class="form-input" placeholder="Confirmez votre mot de passe" required>
+      </div>
+      <button type="submit" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Créer mon compte
+      </button>
+    </form>
+
+    <div class="social-login">
+      <a href="#" class="social-btn" id="googleAuth">
+        <i class="fab fa-google"></i> Google
+      </a>
+      <a href="#" class="social-btn" id="appleAuth">
+        <i class="fab fa-apple"></i> Apple
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Dashboard -->
+<div class="container" id="dashboardSection" style="display: none;">
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="user-name" id="userName">Joueur Pro</div>
+        <div class="user-stats">
+          <div class="stat-item">
+            <div class="stat-value" id="userWins">0</div>
+            <div class="stat-label">Victoires</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="userGames">0</div>
+            <div class="stat-label">Parties</div>
+          </div>
+        </div>
+      </div>
+      
+      <ul class="sidebar-nav">
+        <li><a href="#" class="active" data-section="lobby">
+          <i class="fas fa-home"></i> Lobby
+        </a></li>
+        <li><a href="#" data-section="game">
+          <i class="fas fa-play"></i> Partie en cours
+        </a></li>
+        <li><a href="#" data-section="tournaments">
+          <i class="fas fa-trophy"></i> Tournois
+        </a></li>
+        <li><a href="#" data-section="stats">
+          <i class="fas fa-chart-bar"></i> Statistiques
+        </a></li>
+        <li><a href="#" data-section="settings">
+          <i class="fas fa-cog"></i> Paramètres
+        </a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Lobby Section -->
+      <section class="content-section" id="lobbyContent">
+        <div class="section-title">
+          <i class="fas fa-table"></i>
+          Tables disponibles
+          <button class="btn btn-primary" id="createTableBtn" style="margin-left: auto;">
+            <i class="fas fa-plus"></i> Créer une table
+          </button>
+        </div>
+        
+        <div class="tables-grid" id="tablesGrid">
+          <!-- Tables will be populated here -->
+        </div>
+      </section>
+
+      <!-- Game Section -->
+      <section class="content-section hidden" id="gameContent">
+        <div class="game-interface">
+          <div class="game-header">
+            <div class="section-title">
+              <i class="fas fa-spade"></i>
+              Table de jeu
+            </div>
+            <div class="game-timer" id="gameTimer">
+              <i class="fas fa-clock"></i>
+              <span id="timeLeft">60</span>s
+            </div>
+          </div>
+
+          <div class="game-table">
+            <div class="table-center">
+              <div class="deck-card deck-pile" id="deckPile">
+                <i class="fas fa-layer-group"></i>
+                <div>Pioche</div>
+                <div class="deck-count" id="deckCount">104</div>
+              </div>
+              
+              <div class="deck-card discard-pile" id="discardPile">
+                <i class="fas fa-trash"></i>
+                <div>Défausse</div>
+                <div class="deck-count" id="discardCount">0</div>
+              </div>
+            </div>
+
+            <div class="players-hands" id="playersHands">
+              <!-- Player hands will be populated here -->
+            </div>
+
+            <div class="game-controls">
+              <button class="control-btn btn-draw" id="drawBtn">
+                <i class="fas fa-hand-paper"></i> Piocher
+              </button>
+              <button class="control-btn btn-discard" id="takeDiscardBtn">
+                <i class="fas fa-recycle"></i> Prendre défausse
+              </button>
+              <button class="control-btn btn-xhol" id="xholBtn">
+                <i class="fas fa-star"></i> Déclarer Xhol!
+              </button>
+              <button class="control-btn btn-pass" id="passBtn">
+                <i class="fas fa-forward"></i> Passer
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tournaments Section -->
+      <section class="content-section hidden" id="tournamentsContent">
+        <div class="section-title">
+          <i class="fas fa-trophy"></i>
+          Tournois
+        </div>
+        
+        <div class="tables-grid">
+          <div class="table-card">
+            <div class="table-header">
+              <div class="table-name">Tournoi Hebdomadaire</div>
+              <div class="table-status status-waiting">Inscription</div>
+            </div>
+            <div class="table-info">
+              <div class="info-item">
+                <div class="info-value">128</div>
+                <div class="info-label">Joueurs max</div>
+              </div>
+              <div class="info-item">
+                <div class="info-value">500€</div>
+                <div class="info-label">Prix total</div>
+              </div>
+            </div>
+            <div class="table-info">
+              <div class="info-item">
+                <div class="info-value">10€</div>
+                <div class="info-label">Buy-in</div>
+              </div>
+              <div class="info-item">
+                <div class="info-value">2h</div>
+                <div class="info-label">Durée</div>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+              <i class="fas fa-ticket-alt"></i> S'inscrire
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats Section -->
+      <section class="content-section hidden" id="statsContent">
+        <div class="section-title">
+          <i class="fas fa-chart-bar"></i>
+          Vos statistiques
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <div class="stat-item" style="padding: 2rem; text-align: center;">
+            <div class="stat-value" style="font-size: 3rem;">85%</div>
+            <div class="stat-label" style="font-size: 1rem;">Taux de victoire</div>
+          </div>
+          <div class="stat-item" style="padding: 2rem; text-align: center;">
+            <div class="stat-value" style="font-size: 3rem;">12</div>
+            <div class="stat-label" style="font-size: 1rem;">Xhol réalisés</div>
+          </div>
+          <div class="stat-item" style="padding: 2rem; text-align: center;">
+            <div class="stat-value" style="font-size: 3rem;">1250</div>
+            <div class="stat-label" style="font-size: 1rem;">Points ELO</div>
+          </div>
+          <div class="stat-item" style="padding: 2rem; text-align: center;">
+            <div class="stat-value" style="font-size: 3rem;">42s</div>
+            <div class="stat-label" style="font-size: 1rem;">Temps moyen/tour</div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <i class="fas fa-crown"></i>
+          Classement global
+        </div>
+        
+        <div class="leaderboard" id="leaderboard">
+          <!-- Leaderboard will be populated here -->
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section class="content-section hidden" id="settingsContent">
+        <div class="section-title">
+          <i class="fas fa-cog"></i>
+          Paramètres
+        </div>
+        
+        <div style="display: grid; gap: 2rem;">
+          <div>
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">Profil</h3>
+            <div class="form-group">
+              <label class="form-label">Nom d'utilisateur</label>
+              <input type="text" class="form-input" id="settingsUsername" placeholder="Votre nom d'utilisateur">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="settingsEmail" placeholder="votre@email.com">
+            </div>
+          </div>
+          
+          <div>
+            <h3 style="margin-bottom: 1rem; color: var(--primary);">Préférences de jeu</h3>
+            <div class="form-group">
+              <label class="form-label">
+                <input type="checkbox" id="autoSort" checked style="margin-right: 0.5rem;">
+                Trier automatiquement les cartes
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <input type="checkbox" id="soundEffects" checked style="margin-right: 0.5rem;">
+                Effets sonores
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <input type="checkbox" id="animations" checked style="margin-right: 0.5rem;">
+                Animations
+              </label>
+            </div>
+          </div>
+          
+          <button class="btn btn-primary" style="width: fit-content;">
+            <i class="fas fa-save"></i> Sauvegarder
+          </button>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Create Table Modal -->
+<div class="modal" id="createTableModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="modal-title">Créer une nouvelle table</h2>
+      <button class="modal-close" id="closeCreateModal">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <form id="createTableForm">
+      <div class="form-group">
+        <label class="form-label">Nom de la table</label>
+        <input type="text" class="form-input" id="tableName" placeholder="Ma super table" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nombre de joueurs maximum</label>
+        <select class="form-input" id="maxPlayers">
+          <option value="2">2 joueurs</option>
+          <option value="3">3 joueurs</option>
+          <option value="4" selected>4 joueurs</option>
+          <option value="5">5 joueurs</option>
+          <option value="6">6 joueurs</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Score cible</label>
+        <select class="form-input" id="targetScore">
+          <option value="71">71 points</option>
+          <option value="101" selected>101 points</option>
+          <option value="151">151 points</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type de table</label>
+        <select class="form-input" id="tableType">
+          <option value="casual">Partie amicale</option>
+          <option value="ranked">Partie classée</option>
+          <option value="tournament">Tournoi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">
+          <input type="checkbox" id="privateTable" style="margin-right: 0.5rem;">
+          Table privée (mot de passe requis)
+        </label>
+      </div>
+      <div class="form-group hidden" id="passwordGroup">
+        <label class="form-label">Mot de passe</label>
+        <input type="password" class="form-input" id="tablePassword" placeholder="Mot de passe de la table">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%;">
+        <i class="fas fa-plus"></i> Créer la table
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+// Variables globales
+let currentUser = null;
+let currentTable = null;
+let gameState = null;
+let gameTimer = null;
+let timeLeft = 60;
+
+// Système d'authentification simulé
+const users = new Map();
+const tables = new Map();
+let nextTableId = 1;
+
+// Utilitaires
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `notification ${type}`;
+  notification.innerHTML = `
+    <div style="display: flex; align-items: center; gap: 0.5rem;">
+      <i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : type === 'warning' ? 'exclamation' : 'info'}-circle"></i>
+      ${message}
+    </div>
+  `;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.remove();
+  }, 4000);
+}
+
+function generateUserId() {
+  return 'user_' + Math.random().toString(36).substr(2, 9);
+}
+
+function getInitials(name) {
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+}
+
+// Gestion des onglets d'authentification
+document.querySelectorAll('.auth-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    
+    const targetTab = tab.dataset.tab;
+    document.querySelectorAll('.auth-form').forEach(form => {
+      form.classList.add('hidden');
+    });
+    document.getElementById(targetTab + 'Form').classList.remove('hidden');
+  });
+});
+
+// Gestion de l'inscription
+document.getElementById('registerForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const inputs = e.target.querySelectorAll('input');
+  
+  const userData = {
+    username: inputs[0].value,
+    email: inputs[1].value,
+    password: inputs[2].value,
+    confirmPassword: inputs[3].value
+  };
+  
+  if (userData.password !== userData.confirmPassword) {
+    showNotification('Les mots de passe ne correspondent pas', 'error');
+    return;
+  }
+  
+  // Vérifier si l'utilisateur existe
+  const existingUser = Array.from(users.values()).find(
+    u => u.email === userData.email || u.username === userData.username
+  );
+  
+  if (existingUser) {
+    showNotification('Un compte avec cet email ou nom d\'utilisateur existe déjà', 'error');
+    return;
+  }
+  
+  // Créer le compte
+  const userId = generateUserId();
+  const newUser = {
+    id: userId,
+    username: userData.username,
+    email: userData.email,
+    password: userData.password, // En production, hasher le mot de passe
+    stats: {
+      gamesPlayed: 0,
+      gamesWon: 0,
+      totalScore: 0,
+      xholCount: 0,
+      elo: 1000
+    },
+    createdAt: new Date()
+  };
+  
+  users.set(userId, newUser);
+  currentUser = newUser;
+  
+  showNotification('Compte créé avec succès!', 'success');
+  setTimeout(() => showDashboard(), 1000);
+});
+
+// Gestion de la connexion
+document.getElementById('loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const inputs = e.target.querySelectorAll('input');
+  
+  const loginData = {
+    identifier: inputs[0].value,
+    password: inputs[1].value
+  };
+  
+  // Rechercher l'utilisateur
+  const user = Array.from(users.values()).find(
+    u => (u.email === loginData.identifier || u.username === loginData.identifier) 
+         && u.password === loginData.password
+  );
+  
+  if (user) {
+    currentUser = user;
+    showNotification('Connexion réussie!', 'success');
+    setTimeout(() => showDashboard(), 1000);
+  } else {
+    showNotification('Identifiants incorrects', 'error');
+  }
+});
+
+// Connexion sociale (simulée)
+document.getElementById('googleAuth').addEventListener('click', (e) => {
+  e.preventDefault();
+  simulateSocialLogin('Google');
+});
+
+document.getElementById('appleAuth').addEventListener('click', (e) => {
+  e.preventDefault();
+  simulateSocialLogin('Apple');
+});
+
+function simulateSocialLogin(provider) {
+  const demoUser = {
+    id: generateUserId(),
+    username: `User_${provider}_${Math.floor(Math.random() * 1000)}`,
+    email: `user@${provider.toLowerCase()}.com`,
+    stats: {
+      gamesPlayed: Math.floor(Math.random() * 50),
+      gamesWon: Math.floor(Math.random() * 25),
+      totalScore: Math.floor(Math.random() * 1000),
+      xholCount: Math.floor(Math.random() * 10),
+      elo: 1000 + Math.floor(Math.random() * 500)
+    },
+    createdAt: new Date()
+  };
+  
+  users.set(demoUser.id, demoUser);
+  currentUser = demoUser;
+  
+  showNotification(`Connecté via ${provider}!`, 'success');
+  setTimeout(() => showDashboard(), 1000);
+}
+
+// Affichage du dashboard
+function showDashboard() {
+  document.getElementById('authSection').style.display = 'none';
+  document.getElementById('dashboardSection').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'block';
+  
+  updateUserProfile();
+  loadTables();
+  loadLeaderboard();
+  initializeDemoTables();
+}
+
+function updateUserProfile() {
+  document.getElementById('userName').textContent = currentUser.username;
+  document.getElementById('userAvatar').innerHTML = getInitials(currentUser.username);
+  document.getElementById('userWins').textContent = currentUser.stats.gamesWon;
+  document.getElementById('userGames').textContent = currentUser.stats.gamesPlayed;
+  document.getElementById('settingsUsername').value = currentUser.username;
+  document.getElementById('settingsEmail').value = currentUser.email || '';
+}
+
+// Navigation dans la sidebar
+document.querySelectorAll('.sidebar-nav a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+    
+    const section = link.dataset.section;
+    showSection(section);
+  });
+});
+
+function showSection(sectionName) {
+  document.querySelectorAll('.content-section').forEach(section => {
+    section.classList.add('hidden');
+  });
+  
+  const targetSection = document.getElementById(sectionName + 'Content');
+  if (targetSection) {
+    targetSection.classList.remove('hidden');
+  }
+  
+  // Actions spécifiques par section
+  switch(sectionName) {
+    case 'stats':
+      updateStatsSection();
+      break;
+    case 'game':
+      if (currentTable) {
+        updateGameInterface();
+      }
+      break;
+  }
+}
+
+// Gestion des tables
+document.getElementById('createTableBtn').addEventListener('click', () => {
+  document.getElementById('createTableModal').classList.add('active');
+});
+
+document.getElementById('closeCreateModal').addEventListener('click', () => {
+  document.getElementById('createTableModal').classList.remove('active');
+});
+
+document.getElementById('privateTable').addEventListener('change', (e) => {
+  const passwordGroup = document.getElementById('passwordGroup');
+  if (e.target.checked) {
+    passwordGroup.classList.remove('hidden');
+  } else {
+    passwordGroup.classList.add('hidden');
+  }
+});
+
+document.getElementById('createTableForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const formData = {
+    name: document.getElementById('tableName').value,
+    maxPlayers: parseInt(document.getElementById('maxPlayers').value),
+    targetScore: parseInt(document.getElementById('targetScore').value),
+    type: document.getElementById('tableType').value,
+    isPrivate: document.getElementById('privateTable').checked,
+    password: document.getElementById('tablePassword').value
+  };
+  
+  createTable(formData);
+  document.getElementById('createTableModal').classList.remove('active');
+  document.getElementById('createTableForm').reset();
+  document.getElementById('passwordGroup').classList.add('hidden');
+});
+
+function createTable(tableData) {
+  const tableId = 'table_' + nextTableId++;
+  
+  const table = {
+    id: tableId,
+    name: tableData.name,
+    maxPlayers: tableData.maxPlayers,
+    targetScore: tableData.targetScore,
+    type: tableData.type,
+    isPrivate: tableData.isPrivate,
+    password: tableData.password,
+    players: [currentUser],
+    status: 'waiting',
+    createdBy: currentUser.id,
+    createdAt: new Date(),
+    gameData: null
+  };
+  
+  tables.set(tableId, table);
+  loadTables();
+  showNotification('Table créée avec succès!', 'success');
+}
+
+function loadTables() {
+  const tablesGrid = document.getElementById('tablesGrid');
+  tablesGrid.innerHTML = '';
+  
+  Array.from(tables.values()).forEach(table => {
+    const tableCard = createTableCard(table);
+    tablesGrid.appendChild(tableCard);
+  });
+}
+
+function createTableCard(table) {
+  const div = document.createElement('div');
+  div.className = 'table-card';
+  
+  const statusClass = table.status === 'waiting' ? 'status-waiting' : 
+                     table.status === 'playing' ? 'status-playing' : 'status-full';
+  
+  const statusText = table.status === 'waiting' ? 'En attente' : 
+                    table.status === 'playing' ? 'En cours' : 'Complète';
+  
+  div.innerHTML = `
+    <div class="table-header">
+      <div class="table-name">${table.name}</div>
+      <div class="table-status ${statusClass}">${statusText}</div>
+    </div>
+    <div class="table-info">
+      <div class="info-item">
+        <div class="info-value">${table.players.length}/${table.maxPlayers}</div>
+        <div class="info-label">Joueurs</div>
+      </div>
+      <div class="info-item">
+        <div class="info-value">${table.targetScore}</div>
+        <div class="info-label">Score cible</div>
+      </div>
+    </div>
+    <div class="players-list">
+      ${table.players.map(player => `
+        <div class="player-item">
+          <div class="player-avatar-small">${getInitials(player.username)}</div>
+          <span>${player.username}</span>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn ${table.players.some(p => p.id === currentUser.id) ? 'btn-secondary' : 'btn-primary'}" 
+            ${table.status !== 'waiting' ? 'disabled' : ''} 
+            onclick="joinTable('${table.id}')">
+      ${table.players.some(p => p.id === currentUser.id) ? 
+        '<i class="fas fa-play"></i> Rejoindre' : 
+        '<i class="fas fa-plus"></i> Rejoindre'}
+    </button>
+  `;
+  
+  return div;
+}
+
+function joinTable(tableId) {
+  const table = tables.get(tableId);
+  if (!table || table.status !== 'waiting') return;
+  
+  if (table.players.some(p => p.id === currentUser.id)) {
+    // Le joueur est déjà dans la table, démarrer la partie
+    currentTable = table;
+    startGame();
+    return;
+  }
+  
+  if (table.players.length >= table.maxPlayers) {
+    showNotification('Cette table est complète', 'error');
+    return;
+  }
+  
+  if (table.isPrivate && table.password) {
+    const password = prompt('Cette table est privée. Entrez le mot de passe:');
+    if (password !== table.password) {
+      showNotification('Mot de passe incorrect', 'error');
+      return;
+    }
+  }
+  
+  table.players.push(currentUser);
+  
+  if (table.players.length === table.maxPlayers) {
+    table.status = 'playing';
+  }
+  
+  loadTables();
+  showNotification('Vous avez rejoint la table!', 'success');
+  
+  if (table.status === 'playing') {
+    currentTable = table;
+    setTimeout(() => startGame(), 1000);
+  }
+}
+
+// Système de jeu Xhol
+function startGame() {
+  showSection('game');
+  
+  currentTable.gameData = initializeGameData();
+  dealCards();
+  updateGameInterface();
+  startTurnTimer();
+  
+  showNotification('La partie commence!', 'success');
+}
+
+function initializeGameData() {
+  return {
+    deck: createDeck(),
+    hands: Array(currentTable.players.length).fill().map(() => []),
+    discardPile: [],
+    currentPlayer: 0,
+    round: 1,
+    scores: Array(currentTable.players.length).fill(0),
+    dealerIndex: 0
+  };
+}
+
+function createDeck() {
+  const deck = [];
+  const suits = ['♠', '♥', '♦', '♣'];
+  const values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A'];
+  
+  // Deux jeux de cartes
+  for (let gameSet = 0; gameSet < 2; gameSet++) {
+    for (let suit of suits) {
+      for (let value of values) {
+        deck.push({
+          suit: suit,
+          value: value,
+          id: `${value}${suit}_${gameSet}`
+        });
+      }
+    }
+    // 2 jokers par jeu
+    deck.push({suit: 'JOKER', value: 'JOKER', id: `JOKER_${gameSet}_1`});
+    deck.push({suit: 'JOKER', value: 'JOKER', id: `JOKER_${gameSet}_2`});
+  }
+  
+  return shuffleDeck(deck);
+}
+
+function shuffleDeck(deck) {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
+
+function dealCards() {
+  const gameData = currentTable.gameData;
+  const cardsPerPlayer = 11;
+  
+  // Distribuer les cartes
+  for (let round = 0; round < cardsPerPlayer; round++) {
+    for (let player = 0; player < currentTable.players.length; player++) {
+      if (gameData.deck.length > 0) {
+        gameData.hands[player].push(gameData.deck.pop());
+      }
+    }
+  }
+  
+  // Première défausse
+  if (gameData.deck.length > 0) {
+    gameData.discardPile.push(gameData.deck.pop());
+  }
+}
+
+function updateGameInterface() {
+  const gameData = currentTable.gameData;
+  
+  // Mettre à jour les compteurs
+  document.getElementById('deckCount').textContent = gameData.deck.length;
+  document.getElementById('discardCount').textContent = gameData.discardPile.length;
+  
+  // Afficher la dernière carte défaussée
+  const discardPile = document.getElementById('discardPile');
+  if (gameData.discardPile.length > 0) {
+    const lastCard = gameData.discardPile[gameData.discardPile.length - 1];
+    discardPile.innerHTML = `
+      <div style="font-size: 0.8rem; font-weight: bold;">${formatCard(lastCard)}</div>
+      <div class="deck-count">${gameData.discardPile.length}</div>
+    `;
+  }
+  
+  // Afficher les mains des joueurs
+  const playersHands = document.getElementById('playersHands');
+  playersHands.innerHTML = '';
+  
+  currentTable.players.forEach((player, index) => {
+    const playerDiv = document.createElement('div');
+    playerDiv.className = `player-hand ${index === gameData.currentPlayer ? 'current-player' : ''}`;
+    
+    const hand = gameData.hands[index];
+    const isCurrentPlayer = player.id === currentUser.id;
+    
+    playerDiv.innerHTML = `
+      <div class="player-header">
+        <div class="player-name">${player.username}</div>
+        <div class="player-score">${gameData.scores[index]} pts</div>
+      </div>
+      <div class="cards-container">
+        ${hand.map((card, cardIndex) => `
+          <div class="card ${getCardClass(card)} ${isCurrentPlayer && index === gameData.currentPlayer ? 'clickable' : ''}" 
+               ${isCurrentPlayer && index === gameData.currentPlayer ? `onclick="discardCard(${cardIndex})"` : ''}>
+            ${isCurrentPlayer ? formatCard(card) : '<i class="fas fa-question"></i>'}
+          </div>
+        `).join('')}
+      </div>
+    `;
+    
+    playersHands.appendChild(playerDiv);
+  });
+  
+  // Activer/désactiver les boutons selon le tour
+  const isMyTurn = gameData.currentPlayer === currentTable.players.findIndex(p => p.id === currentUser.id);
+  document.getElementById('drawBtn').disabled = !isMyTurn;
+  document.getElementById('takeDiscardBtn').disabled = !isMyTurn || gameData.discardPile.length === 0;
+  document.getElementById('xholBtn').disabled = !isMyTurn;
+  document.getElementById('passBtn').disabled = !isMyTurn;
+}
+
+function formatCard(card) {
+  if (card.suit === 'JOKER') return 'JOKER';
+  return `${card.value}${card.suit}`;
+}
+
+function getCardClass(card) {
+  if (card.suit === 'JOKER') return 'card-joker';
+  if (card.suit === '♠' || card.suit === '♣') return 'card-spades';
+  return 'card-hearts';
+}
+
+function startTurnTimer() {
+  clearInterval(gameTimer);
+  timeLeft = 60;
+  
+  gameTimer = setInterval(() => {
+    timeLeft--;
+    document.getElementById('timeLeft').textContent = timeLeft;
+    
+    if (timeLeft <= 10) {
+      document.getElementById('gameTimer').style.color = 'var(--danger)';
+    } else {
+      document.getElementById('gameTimer').style.color = 'var(--accent)';
+    }
+    
+    if (timeLeft <= 0) {
+      clearInterval(gameTimer);
+      handleTimeOut();
+    }
+  }, 1000);
+}
+
+function handleTimeOut() {
+  const gameData = currentTable.gameData;
+  const currentPlayerIndex = gameData.currentPlayer;
+  
+  if (currentTable.players[currentPlayerIndex].id === currentUser.id) {
+    showNotification('Temps écoulé! Vous passez votre tour', 'warning');
+    nextTurn();
+  }
+}
+
+// Actions de jeu
+document.getElementById('drawBtn').addEventListener('click', () => {
+  if (!canPlay()) return;
+  
+  const gameData = currentTable.gameData;
+  const playerIndex = gameData.currentPlayer;
+  
+  if (gameData.deck.length === 0) {
+    showNotification('Le deck est vide!', 'error');
+    return;
+  }
+  
+  const card = gameData.deck.pop();
+  gameData.hands[playerIndex].push(card);
+  
+  updateGameInterface();
+  showNotification('Vous avez pioché une carte. Défaussez maintenant!', 'info');
+  
+  // Le joueur doit maintenant défausser
+  document.getElementById('drawBtn').disabled = true;
+  document.getElementById('takeDiscardBtn').disabled = true;
+});
+
+document.getElementById('takeDiscardBtn').addEventListener('click', () => {
+  if (!canPlay()) return;
+  
+  const gameData = currentTable.gameData;
+  const playerIndex = gameData.currentPlayer;
+  
+  if (gameData.discardPile.length === 0) {
+    showNotification('La défausse est vide!', 'error');
+    return;
+  }
+  
+  const card = gameData.discardPile.pop();
+  gameData.hands[playerIndex].push(card);
+  
+  updateGameInterface();
+  showNotification('Vous avez pris la défausse. Défaussez maintenant!', 'info');
+  
+  // Le joueur doit maintenant défausser
+  document.getElementById('drawBtn').disabled = true;
+  document.getElementById('takeDiscardBtn').disabled = true;
+});
+
+document.getElementById('xholBtn').addEventListener('click', () => {
+  if (!canPlay()) return;
+  
+  const gameData = currentTable.gameData;
+  const playerIndex = gameData.currentPlayer;
+  const hand = gameData.hands[playerIndex];
+  
+  const xholResult = checkXhol(hand);
+  
+  if (xholResult.isValid) {
+    let points = 0;
+    if (xholResult.type === 'complete_sequence') {
+      points = -50;
+      showNotification('Xhol complet réalisé! -50 points', 'success');
+    } else if (xholResult.type === 'complete_set') {
+      points = -25;
+      showNotification('Xhol réalisé! -25 points', 'success');
+    } else {
+      points = -10;
+      showNotification('Victoire! -10 points', 'success');
+    }
+    
+    gameData.scores[playerIndex] += points;
+    currentUser.stats.xholCount++;
+    
+    endRound();
+  } else {
+    gameData.scores[playerIndex] += 25;
+    showNotification('Xhol invalide! +25 points de pénalité', 'error');
+    nextTurn();
+  }
+});
+
+document.getElementById('passBtn').addEventListener('click', () => {
+  if (!canPlay()) return;
+  nextTurn();
+});
+
+function discardCard(cardIndex) {
+  if (!canPlay()) return;
+  
+  const gameData = currentTable.gameData;
+  const playerIndex = gameData.currentPlayer;
+  
+  const card = gameData.hands[playerIndex].splice(cardIndex, 1)[0];
+  gameData.discardPile.push(card);
+  
+  updateGameInterface();
+  
+  // Vérifier si le joueur a vidé sa main
+  if (gameData.hands[playerIndex].length === 0) {
+    gameData.scores[playerIndex] -= 10;
+    currentUser.stats.xholCount++;
+    showNotification('Main vide! Victoire automatique! -10 points', 'success');
+    endRound();
+    return;
+  }
+  
+  nextTurn();
+}
+
+function canPlay() {
+  const gameData = currentTable.gameData;
+  const playerIndex = currentTable.players.findIndex(p => p.id === currentUser.id);
+  return gameData.currentPlayer === playerIndex;
+}
+
+function nextTurn() {
+  const gameData = currentTable.gameData;
+  gameData.currentPlayer = (gameData.currentPlayer + 1) % currentTable.players.length;
+  
+  updateGameInterface();
+  startTurnTimer();
+  
+  const currentPlayerName = currentTable.players[gameData.currentPlayer].username;
+  showNotification(`C'est au tour de ${currentPlayerName}`, 'info');
+}
+
+function checkXhol(hand) {
+  if (hand.length === 0) {
+    return { isValid: true, type: 'empty' };
+  }
+  
+  // Logique simplifiée pour la démo
+  // Dans une vraie implémentation, il faudrait vérifier les suites et les sets
+  const jokers = hand.filter(card => card.suit === 'JOKER');
+  const normalCards = hand.filter(card => card.suit !== 'JOKER');
+  
+  // Vérifier si toutes les cartes ont la même valeur (set)
+  if (normalCards.length > 0) {
+    const values = normalCards.map(card => card.value);
+    const uniqueValues = [...new Set(values)];
+    
+    if (uniqueValues.length === 1 && normalCards.length + jokers.length >= 3) {
+      return { isValid: true, type: 'complete_set' };
+    }
+    
+    // Vérifier suite (même couleur, valeurs consécutives)
+    const suits = normalCards.map(card => card.suit);
+    const uniqueSuits = [...new Set(suits)];
+    
+    if (uniqueSuits.length === 1 && normalCards.length + jokers.length >= 3) {
+      return { isValid: true, type: 'complete_sequence' };
+    }
+  }
+  
+  // Pour la démo, accepter toute combinaison de 3+ cartes
+  if (hand.length >= 3) {
+    return { isValid: true, type: 'normal' };
+  }
+  
+  return { isValid: false };
+}
+
+function endRound() {
+  clearInterval(gameTimer);
+  
+  const gameData = currentTable.gameData;
+  
+  // Calculer les points des autres joueurs
+  currentTable.players.forEach((player, index) => {
+    if (index === gameData.currentPlayer) return;
+    
+    let points = 0;
+    gameData.hands[index].forEach(card => {
+      if (['J', 'Q', 'K', 'A'].includes(card.value)) {
+        points += 10;
+      } else if (card.value === 'JOKER') {
+        points += 15;
+      } else {
+        points += typeof card.value === 'number' ? card.value : 10;
+      }
+    });
+    
+    gameData.scores[index] += points;
+  });
+  
+  updateGameInterface();
+  
+  // Vérifier si quelqu'un a atteint le score cible
+  const maxScore = Math.max(...gameData.scores);
+  if (maxScore >= currentTable.targetScore) {
+    endGame();
+    return;
+  }
+  
+  // Nouvelle manche
+  gameData.round++;
+  gameData.dealerIndex = (gameData.dealerIndex + 1) % currentTable.players.length;
+  gameData.currentPlayer = gameData.dealerIndex;
+  
+  setTimeout(() => {
+    if (confirm('Manche terminée! Commencer la suivante?')) {
+      startNewRound();
+    } else {
+      backToLobby();
+    }
+  }, 2000);
+}
+
+function startNewRound() {
+  const gameData = currentTable.gameData;
+  gameData.deck = createDeck();
+  gameData.hands = Array(currentTable.players.length).fill().map(() => []);
+  gameData.discardPile = [];
+  
+  dealCards();
+  updateGameInterface();
+  startTurnTimer();
+  
+  showNotification(`Manche ${gameData.round} commence!`, 'info');
+}
+
+function endGame() {
+  clearInterval(gameTimer);
+  
+  const gameData = currentTable.gameData;
+  const winnerIndex = gameData.scores.indexOf(Math.min(...gameData.scores));
+  const winner = currentTable.players[winnerIndex];
+  
+  // Mettre à jour les statistiques
+  currentTable.players.forEach((player, index) => {
+    const user = users.get(player.id);
+    if (user) {
+      user.stats.gamesPlayed++;
+      if (index === winnerIndex) {
+        user.stats.gamesWon++;
+      }
+      user.stats.totalScore += gameData.scores[index];
+    }
+  });
+  
+  showNotification(`${winner.username} a gagné la partie!`, 'success');
+  
+  setTimeout(() => {
+    backToLobby();
+  }, 3000);
+}
+
+function backToLobby() {
+  clearInterval(gameTimer);
+  currentTable.status = 'finished';
+  currentTable = null;
+  
+  showSection('lobby');
+  loadTables();
+  loadLeaderboard();
+}
+
+// Interface des statistiques
+function updateStatsSection() {
+  // Mettre à jour les statistiques affichées
+  const winRate = currentUser.stats.gamesPlayed > 0 ? 
+    Math.round((currentUser.stats.gamesWon / currentUser.stats.gamesPlayed) * 100) : 0;
+  
+  document.querySelector('#statsContent .stat-value').textContent = winRate + '%';
+}
+
+// Classement
+function loadLeaderboard() {
+  const leaderboard = document.getElementById('leaderboard');
+  leaderboard.innerHTML = '';
+  
+  const sortedUsers = Array.from(users.values())
+    .sort((a, b) => {
+      // Trier par taux de victoire puis par nombre de parties
+      const winRateA = a.stats.gamesPlayed > 0 ? a.stats.gamesWon / a.stats.gamesPlayed : 0;
+      const winRateB = b.stats.gamesPlayed > 0 ? b.stats.gamesWon / b.stats.gamesPlayed : 0;
+      
+      if (winRateA !== winRateB) return winRateB - winRateA;
+      return b.stats.gamesWon - a.stats.gamesWon;
+    })
+    .slice(0, 10);
+  
+  sortedUsers.forEach((user, index) => {
+    const div = document.createElement('div');
+    div.className = 'leaderboard-item';
+    
+    const rankClass = index === 0 ? 'first' : index === 1 ? 'second' : index === 2 ? 'third' : '';
+    const winRate = user.stats.gamesPlayed > 0 ? 
+      Math.round((user.stats.gamesWon / user.stats.gamesPlayed) * 100) : 0;
+    
+    div.innerHTML = `
+      <div class="rank ${rankClass}">${index + 1}</div>
+      <div class="player-avatar-small">${getInitials(user.username)}</div>
+      <div class="player-info">
+        <div style="font-weight: 600;">${user.username}</div>
+        <div style="font-size: 0.8rem; color: var(--gray);">ELO: ${user.stats.elo}</div>
+      </div>
+      <div class="player-stats">
+        <div class="stat">
+          <div style="font-weight: 600; color: var(--primary);">${winRate}%</div>
+          <div style="font-size: 0.7rem; color: var(--gray);">Victoires</div>
+        </div>
+        <div class="stat">
+          <div style="font-weight: 600; color: var(--secondary);">${user.stats.xholCount}</div>
+          <div style="font-size: 0.7rem; color: var(--gray);">Xhol</div>
+        </div>
+        <div class="stat">
+          <div style="font-weight: 600;">${user.stats.gamesPlayed}</div>
+          <div style="font-size: 0.7rem; color: var(--gray);">Parties</div>
+        </div>
+      </div>
+    `;
+    
+    leaderboard.appendChild(div);
+  });
+}
+
+// Déconnexion
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  if (confirm('Êtes-vous sûr de vouloir vous déconnecter?')) {
+    currentUser = null;
+    currentTable = null;
+    clearInterval(gameTimer);
+    
+    document.getElementById('authSection').style.display = 'flex';
+    document.getElementById('dashboardSection').style.display = 'none';
+    document.getElementById('logoutBtn').style.display = 'none';
+    
+    showNotification('Déconnecté avec succès', 'info');
+  }
+});
+
+// Données de démonstration
+function initializeDemoTables() {
+  // Créer quelques utilisateurs de démonstration
+  const demoUsers = [
+    { username: 'Alice_Pro', email: 'alice@demo.com', stats: { gamesPlayed: 45, gamesWon: 32, totalScore: 1250, xholCount: 28, elo: 1450 }},
+    { username: 'Bob_Master', email: 'bob@demo.com', stats: { gamesPlayed: 38, gamesWon: 25, totalScore: 1100, xholCount: 22, elo: 1320 }},
+    { username: 'Carol_Expert', email: 'carol@demo.com', stats: { gamesPlayed: 52, gamesWon: 28, totalScore: 1400, xholCount: 31, elo: 1280 }},
+    { username: 'Dave_Champion', email: 'dave@demo.com', stats: { gamesPlayed: 67, gamesWon: 45, totalScore: 1800, xholCount: 40, elo: 1520 }},
+    { username: 'Eve_Legend', email: 'eve@demo.com', stats: { gamesPlayed: 89, gamesWon: 67, totalScore: 2200, xholCount: 58, elo: 1680 }}
+  ];
+  
+  demoUsers.forEach(userData => {
+    const userId = generateUserId();
+    const user = {
+      id: userId,
+      username: userData.username,
+      email: userData.email,
+      password: 'demo123',
+      stats: userData.stats,
+      createdAt: new Date()
+    };
+    users.set(userId, user);
+  });
+  
+  // Créer quelques tables de démonstration
+  const demoTables = [
+    {
+      name: 'Table des Pros',
+      maxPlayers: 4,
+      targetScore: 101,
+      type: 'ranked',
+      players: Array.from(users.values()).slice(0, 2)
+    },
+    {
+      name: 'Partie Rapide',
+      maxPlayers: 3,
+      targetScore: 71,
+      type: 'casual',
+      players: Array.from(users.values()).slice(2, 3)
+    },
+    {
+      name: 'Tournoi VIP',
+      maxPlayers: 6,
+      targetScore: 151,
+      type: 'tournament',
+      players: Array.from(users.values()).slice(0, 3)
+    }
+  ];
+  
+  demoTables.forEach(tableData => {
+    const tableId = 'demo_table_' + nextTableId++;
+    const table = {
+      id: tableId,
+      name: tableData.name,
+      maxPlayers: tableData.maxPlayers,
+      targetScore: tableData.targetScore,
+      type: tableData.type,
+      isPrivate: false,
+      password: '',
+      players: tableData.players,
+      status: 'waiting',
+      createdBy: tableData.players[0].id,
+      createdAt: new Date(),
+      gameData: null
+    };
+    
+    tables.set(tableId, table);
+  });
+  
+  loadLeaderboard();
+}
+
+// Gestion du responsive et des interactions clavier
+document.addEventListener('keydown', (e) => {
+  if (!currentTable || !currentTable.gameData) return;
+  
+  switch(e.key.toLowerCase()) {
+    case 'd':
+      document.getElementById('drawBtn').click();
+      break;
+    case 'r':
+      document.getElementById('takeDiscardBtn').click();
+      break;
+    case 'x':
+      document.getElementById('xholBtn').click();
+      break;
+    case 'p':
+      document.getElementById('passBtn').click();
+      break;
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
+      const cardIndex = parseInt(e.key) - 1;
+      const gameData = currentTable.gameData;
+      const playerIndex = currentTable.players.findIndex(p => p.id === currentUser.id);
+      
+      if (playerIndex === gameData.currentPlayer && 
+          gameData.hands[playerIndex] && 
+          cardIndex < gameData.hands[playerIndex].length) {
+        discardCard(cardIndex);
+      }
+      break;
+  }
+});
+
+// Fermeture des modals en cliquant à l'extérieur
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal')) {
+    e.target.classList.remove('active');
+  }
+});
+
+// Animation d'entrée des éléments
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationDelay = Math.random() * 0.3 + 's';
+      entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+    }
+  });
+});
+
+// Sauvegarder les paramètres
+document.querySelector('#settingsContent button').addEventListener('click', () => {
+  const newUsername = document.getElementById('settingsUsername').value;
+  const newEmail = document.getElementById('settingsEmail').value;
+  
+  if (newUsername && newUsername !== currentUser.username) {
+    // Vérifier si le nom d'utilisateur est disponible
+    const existingUser = Array.from(users.values()).find(
+      u => u.username === newUsername && u.id !== currentUser.id
+    );
+    
+    if (existingUser) {
+      showNotification('Ce nom d\'utilisateur est déjà pris', 'error');
+      return;
+    }
+    
+    currentUser.username = newUsername;
+  }
+  
+  if (newEmail) {
+    currentUser.email = newEmail;
+  }
+  
+  updateUserProfile();
+  showNotification('Paramètres sauvegardés!', 'success');
+});
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', () => {
+  initializeDemoTables();
+  
+  // Observer les éléments pour les animations
+  document.querySelectorAll('.table-card, .leaderboard-item, .content-section').forEach(el => {
+    observer.observe(el);
+  });
+  
+  console.log('🎮 Xhol Pro initialisé avec succès!');
+  console.log('⌨️  Raccourcis clavier: D (piocher), R (défausse), X (Xhol), P (passer), 1-9 (défausser carte)');
+});
+
+// Simulation de l'arrivée de nouveaux joueurs
+setInterval(() => {
+  if (Math.random() < 0.1) { // 10% de chance toutes les 5 secondes
+    Array.from(tables.values()).forEach(table => {
+      if (table.status === 'waiting' && 
+          table.players.length < table.maxPlayers &&
+          !table.players.some(p => p.id === currentUser.id)) {
+        
+        const availableUsers = Array.from(users.values()).filter(
+          user => !table.players.some(p => p.id === user.id)
+        );
+        
+        if (availableUsers.length > 0) {
+          const randomUser = availableUsers[Math.floor(Math.random() * availableUsers.length)];
+          table.players.push(randomUser);
+          
+          if (table.players.length === table.maxPlayers) {
+            table.status = 'playing';
+          }
+          
+          loadTables();
+        }
+      }
+    });
+  }
+}, 5000);
+
+// Gestion des erreurs globales
+window.addEventListener('error', (e) => {
+  console.error('Erreur détectée:', e.error);
+  showNotification('Une erreur s\'est produite. Veuillez actualiser la page.', 'error');
+});
+
+// Performance et optimisation
+let resizeTimeout;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    // Réajuster l'interface si nécessaire
+    if (currentTable && currentTable.gameData) {
+      updateGameInterface();
+    }
+  }, 250);
+});
+</script>
+
+</body>
+</html>
