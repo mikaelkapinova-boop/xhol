@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xhol - Jeu de Cartes Premium</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+  color: #fff;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 3em;
+  margin-bottom: 30px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.5); }
+  to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.8); }
+}
+
+.panel {
+  background: rgba(255,255,255,0.95);
+  border-radius: 20px;
+  padding: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  color: #333;
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 5px;
+  box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102,126,234,0.6);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input, select {
+  padding: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  margin: 5px;
+  transition: border-color 0.3s;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Auth Section */
+#auth {
+  text-align: center;
+}
+
+.auth-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.auth-status {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* Lobby */
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.create-table-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-group label {
+  min-width: 150px;
+  font-weight: 600;
+}
+
+.tables-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.table-item {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.table-item:hover {
+  transform: translateX(5px);
+}
+
+.ranking-list {
+  list-style: none;
+}
+
+.ranking-item {
+  padding: 10px;
+  margin: 5px 0;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 8px;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Game Table */
+.game-table {
+  background: radial-gradient(ellipse at center, #2a9d8f, #264653);
+  border-radius: 20px;
+  padding: 30px;
+  min-height: 400px;
+  position: relative;
+  box-shadow: inset 0 0 50px rgba(0,0,0,0.3);
+}
+
+.table-center {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 30px 0;
+}
+
+.card-stack {
+  width: 80px;
+  height: 120px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  position: relative;
+}
+
+.deck {
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+}
+
+.deck:hover {
+  transform: translateY(-5px) rotate(5deg);
+}
+
+.discard-pile {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  font-size: 24px;
+}
+
+.card-count {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: white;
+  background: rgba(0,0,0,0.5);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Players Area */
+.players-area {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.player-section {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 15px;
+  border: 2px solid transparent;
+  transition: all 0.3s;
+}
+
+.player-section.active {
+  border-color: #f1c40f;
+  box-shadow: 0 0 20px rgba(241,196,15,0.5);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.player-name {
+  font-weight: bold;
+  font-size: 18px;
+  color: #f1c40f;
+}
+
+.player-score {
+  background: rgba(0,0,0,0.3);
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.player-timer {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.player-hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 120px;
+  padding: 10px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 10px;
+}
+
+/* Cards */
+.card {
+  width: 60px;
+  height: 90px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+  position: relative;
+  background: white;
+  border: 2px solid #333;
+}
+
+.card:hover {
+  transform: translateY(-10px) rotate(-5deg);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+}
+
+.card.selected {
+  transform: translateY(-15px);
+  box-shadow: 0 0 20px rgba(255,215,0,0.8);
+  border-color: gold;
+}
+
+.card-value {
+  font-size: 24px;
+}
+
+.card-suit {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.card.hearts, .card.diamonds {
+  color: #e74c3c;
+}
+
+.card.clubs, .card.spades {
+  color: #2c3e50;
+}
+
+.card.joker {
+  background: linear-gradient(135deg, #f39c12, #f1c40f);
+  color: #2c3e50;
+  animation: jokerAnimation 2s infinite;
+}
+
+@keyframes jokerAnimation {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-2deg); }
+}
+
+/* Controls */
+.game-controls {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.xhol-button {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  font-size: 20px;
+  padding: 15px 30px;
+  animation: xholPulse 2s infinite;
+}
+
+@keyframes xholPulse {
+  0%, 100% { box-shadow: 0 5px 15px rgba(243,156,18,0.4); }
+  50% { box-shadow: 0 5px 25px rgba(243,156,18,0.8); }
+}
+
+/* Status & Score */
+.status-bar {
+  background: rgba(0,0,0,0.3);
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 18px;
+}
+
+.score-board {
+  background: rgba(255,255,255,0.95);
+  color: #333;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+}
+
+.score-list {
+  list-style: none;
+}
+
+.score-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin: 5px 0;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border-radius: 8px;
+}
+
+.winner {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  animation: winnerGlow 1s infinite;
+}
+
+@keyframes winnerGlow {
+  0%, 100% { box-shadow: 0 0 10px rgba(243,156,18,0.5); }
+  50% { box-shadow: 0 0 20px rgba(243,156,18,0.9); }
+}
+
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: white;
+  color: #333;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: slideInRight 0.5s ease-out;
+  z-index: 1000;
+  max-width: 300px;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(400px); }
+  to { transform: translateX(0); }
+}
+
+.notification.success {
+  border-left: 5px solid #2ecc71;
+}
+
+.notification.error {
+  border-left: 5px solid #e74c3c;
+}
+
+.notification.info {
+  border-left: 5px solid #3498db;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎴 XHOL 🎴</h1>
+
+  <!-- Auth Section -->
+  <div id="auth" class="panel">
+    <h2>Connexion</h2>
+    <div class="auth-buttons">
+      <button onclick="login('google')">📧 Se connecter avec Gmail</button>
+      <button onclick="login('icloud')">☁️ Se connecter avec iCloud</button>
+    </div>
+    <div class="auth-status" id="authStatus"></div>
+  </div>
+
+  <!-- Lobby Section -->
+  <div id="lobby" class="panel hidden">
+    <h2>Lobby</h2>
+    <div class="lobby-grid">
+      <div>
+        <h3>Créer une table</h3>
+        <div class="create-table-form">
+          <div class="form-group">
+            <label>Nombre de joueurs:</label>
+            <input type="number" id="numPlayers" min="2" max="6" value="4">
+          </div>
+          <div class="form-group">
+            <label>Score cible:</label>
+            <select id="targetScore">
+              <option value="71">71 points</option>
+              <option value="101">101 points</option>
+            </select>
+          </div>
+          <button onclick="createTable()">🎲 Créer la table</button>
+        </div>
+        
+        <h3 style="margin-top: 30px;">Tables disponibles</h3>
+        <div class="tables-list" id="tablesList"></div>
+      </div>
+      
+      <div>
+        <h3>🏆 Classement Global</h3>
+        <ul class="ranking-list" id="globalRanking"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Section -->
+  <div id="gameContainer" class="hidden">
+    <div class="game-table">
+      <h2 style="text-align: center; color: white; margin-bottom: 20px;">Table de Jeu</h2>
+      
+      <div class="table-center">
+        <div class="card-stack deck" id="deck" onclick="drawFromDeck()">
+          <div>DECK</div>
+          <div class="card-count" id="deckCount">0</div>
+        </div>
+        <div class="card-stack discard-pile" id="discardPile" onclick="drawFromDiscard()">
+          <div id="discardTop">Défausse</div>
+          <div class="card-count" id="discardCount">0</div>
+        </div>
+      </div>
+
+      <div class="players-area" id="playersArea"></div>
+
+      <div class="game-controls">
+        <button onclick="drawFromDeck()">📥 Piocher du deck</button>
+        <button onclick="drawFromDiscard()">📤 Prendre la défausse</button>
+        <button class="xhol-button" onclick="declareXhol()">⭐ XHOL! ⭐</button>
+      </div>
+
+      <div class="status-bar" id="statusBar">En attente...</div>
+    </div>
+
+    <div class="score-board hidden" id="scoreBoard">
+      <h3>📊 Tableau des Scores</h3>
+      <ul class="score-list" id="scoreList"></ul>
+      <button onclick="nextRound()">Manche suivante</button>
+      <button onclick="backToLobby()">Retour au lobby</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Game State
+let gameState = {
+  currentUser: null,
+  tables: [],
+  currentTable: null,
+  selectedCard: null,
+  turnTimer: null,
+  timeLeft: 60,
+  hasDrawn: false
+};
+
+// Mock global rankings
+let globalRankings = [
+  { name: "Champion_2024", score: 1250 },
+  { name: "ProPlayer", score: 980 },
+  { name: "CardMaster", score: 875 },
+  { name: "XholKing", score: 720 },
+  { name: "Rookie", score: 450 }
+];
+
+// Authentication
+function login(provider) {
+  const email = prompt(`Entrez votre email ${provider === 'google' ? 'Gmail' : 'iCloud'}:`);
+  if (email) {
+    gameState.currentUser = email;
+    document.getElementById('authStatus').textContent = `✅ Connecté: ${email}`;
+    document.getElementById('auth').classList.add('hidden');
+    document.getElementById('lobby').classList.remove('hidden');
+    renderGlobalRanking();
+    showNotification(`Bienvenue ${email}!`, 'success');
+  }
+}
+
+// Notifications
+function showNotification(message, type = 'info') {
+  const notif = document.createElement('div');
+  notif.className = `notification ${type}`;
+  notif.textContent = message;
+  document.body.appendChild(notif);
+  setTimeout(() => notif.remove(), 3000);
+}
+
+// Create Table
+function createTable() {
+  const numPlayers = parseInt(document.getElementById('numPlayers').value);
+  const targetScore = parseInt(document.getElementById('targetScore').value);
+  
+  const table = {
+    id: `table_${Date.now()}`,
+    maxPlayers: numPlayers,
+    targetScore: targetScore,
+    players: [gameState.currentUser],
+    status: 'waiting',
+    hands: [],
+    deck: [],
+    discardPile: [],
+    currentPlayer: 0,
+    scores: {},
+    round: 1
+  };
+  
+  // Initialize scores
+  table.scores[gameState.currentUser] = 0;
+  
+  // Add AI players
+  for (let i = 1; i < numPlayers; i++) {
+    const aiName = `Bot_${i}`;
+    table.players.push(aiName);
+    table.scores[aiName] = 0;
+  }
+  
+  gameState.tables.push(table);
+  gameState.currentTable = table;
+  
+  startGame(table);
+  showNotification('Table créée avec succès!', 'success');
+}
+
+// Start Game
+function startGame(table) {
+  document.getElementById('lobby').classList.add('hidden');
+  document.getElementById('gameContainer').classList.remove('hidden');
+  
+  // Initialize deck
+  table.deck = createDeck();
+  shuffleDeck(table.deck);
+  
+  // Initialize hands
+  table.hands = table.players.map(() => []);
+  
+  // Deal cards
+  dealCards(table);
+  
+  // Start first turn
+  startTurn(table);
+}
+
+// Create Deck
+function createDeck() {
+  const deck = [];
+  const suits = ['♠', '♥', '♦', '♣'];
+  const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+  
+  // Two decks
+  for (let d = 0; d < 2; d++) {
+    for (let suit of suits) {
+      for (let value of values) {
+        deck.push({ suit, value, display: value + suit });
+      }
+    }
+    // Add jokers
+    deck.push({ suit: 'joker', value: 'JOKER', display: '🃏' });
+    deck.push({ suit: 'joker', value: 'JOKER', display: '🃏' });
+  }
+  
+  return deck;
+}
+
+// Shuffle Deck
+function shuffleDeck(deck) {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+}
+
+// Deal Cards
+function dealCards(table) {
+  // Deal 11 cards to each player
+  for (let i = 0; i < 11; i++) {
+    for (let p = 0; p < table.players.length; p++) {
+      if (table.deck.length > 0) {
+        table.hands[p].push(table.deck.pop());
+      }
+    }
+  }
+  
+  // First discard
+  if (table.deck.length > 0) {
+    table.discardPile.push(table.deck.pop());
+  }
+  
+  renderGame();
+}
+
+// Render Game
+function renderGame() {
+  const table = gameState.currentTable;
+  if (!table) return;
+  
+  // Update deck and discard counts
+  document.getElementById('deckCount').textContent = table.deck.length;
+  document.getElementById('discardCount').textContent = table.discardPile.length;
+  
+  // Update discard pile top card
+  if (table.discardPile.length > 0) {
+    const topCard = table.discardPile[table.discardPile.length - 1];
+    document.getElementById('discardTop').textContent = topCard.display;
+  }
+  
+  // Render players
+  const playersArea = document.getElementById('playersArea');
+  playersArea.innerHTML = '';
+  
+  table.players.forEach((player, index) => {
+    const playerSection = document.createElement('div');
+    playerSection.className = 'player-section';
+    if (index === table.currentPlayer) {
+      playerSection.classList.add('active');
+    }
+    
+    const header = document.createElement('div');
+    header.className = 'player-header';
+    header.innerHTML = `
+      <span class="player-name">${player}</span>
+      <div>
+        <span class="player-score">Score: ${table.scores[player]}</span>
+        ${index === table.currentPlayer ? `<span class="player-timer">⏱ ${gameState.timeLeft}s</span>` : ''}
+      </div>
+    `;
+    
+    const hand = document.createElement('div');
+    hand.className = 'player-hand';
+    
+    if (player === gameState.currentUser) {
+      // Show user's cards
+      table.hands[index].forEach((card, cardIndex) => {
+        const cardEl = createCardElement(card, cardIndex);
+        hand.appendChild(cardEl);
+      });
+    } else {
+      // Show card backs for other players
+      hand.innerHTML = `<div style="color: rgba(255,255,255,0.5);">🎴 ${table.hands[index].length} cartes</div>`;
+    }
+    
+    playerSection.appendChild(header);
+    playerSection.appendChild(hand);
+    playersArea.appendChild(playerSection);
+  });
+}
+
+// Create Card Element
+function createCardElement(card, index) {
+  const cardEl = document.createElement('div');
+  cardEl.className = 'card';
+  
+  if (card.suit === 'joker') {
+    cardEl.classList.add('joker');
+  } else if (card.suit === '♥' || card.suit === '♦') {
+    cardEl.classList.add('hearts');
+  } else {
+    cardEl.classList.add('clubs');
+  }
+  
+  if (gameState.selectedCard === index) {
+    cardEl.classList.add('selected');
+  }
+  
+  cardEl.innerHTML = `
+    <div class="card-value">${card.value}</div>
+    <div class="card-suit">${card.suit === 'joker' ? '🃏' : card.suit}</div>
+  `;
+  
+  cardEl.onclick = () => selectCard(index);
+  
+  return cardEl;
+}
+
+// Select Card
+function selectCard(index) {
+  const table = gameState.currentTable;
+  if (!table || table.players[table.currentPlayer] !== gameState.currentUser) {
+    showNotification("Ce n'est pas votre tour!", 'error');
+    return;
+  }
+  
+  if (!gameState.hasDrawn) {
+    showNotification("Vous devez d'abord piocher une carte!", 'error');
+    return;
+  }
+  
+  gameState.selectedCard = index;
+  renderGame();
+  
+  // Auto discard after selection
+  setTimeout(() => discardCard(index), 500);
+}
+
+// Draw from Deck
+function drawFromDeck() {
+  const table = gameState.currentTable;
+  if (!table || table.players[table.currentPlayer] !== gameState.currentUser) {
+    showNotification("Ce n'est pas votre tour!", 'error');
+    return;
+  }
+  
+  if (gameState.hasDrawn) {
+    showNotification("Vous avez déjà pioché!", 'error');
+    return;
+  }
+  
+  if (table.deck.length === 0) {
+    // Reshuffle discard pile
+    table.deck = table.discardPile.slice(0, -1);
+    table.discardPile = [table.discardPile[table.discardPile.length - 1]];
+    shuffleDeck(table.deck);
+  }
+  
+  const card = table.deck.pop();
+  table.hands[table.currentPlayer].push(card);
+  gameState.hasDrawn = true;
+  
+  renderGame();
+  showNotification(`Carte piochée: ${card.display}`, 'info');
+}
+
+// Draw from Discard
+function drawFromDiscard() {
+  const table = gameState.currentTable;
+  if (!table || table.players[table.currentPlayer] !== gameState.currentUser) {
+    showNotification("Ce n'est pas votre tour!", 'error');
+    return;
+  }
+  
+  if (gameState.hasDrawn) {
+    showNotification("Vous avez déjà pioché!", 'error');
+    return;
+  }
+  
+  if (table.discardPile.length === 0) {
+    showNotification("La défausse est vide!", 'error');
+    return;
+  }
+  
+  const card = table.discardPile.pop();
+  table.hands[table.currentPlayer].push(card);
+  gameState.hasDrawn = true;
+  
+  renderGame();
+  showNotification(`Carte prise de la défausse: ${card.display}`, 'info');
+}
+
+// Discard Card
+function discardCard(index) {
+  const table = gameState.currentTable;
+  if (!table) return;
+  
+  const playerIndex = table.players.indexOf(gameState.currentUser);
+  const card = table.hands[playerIndex].splice(index, 1)[0];
+  table.discardPile.push(card);
+  
+  gameState.selectedCard = null;
+  gameState.hasDrawn = false;
+  
+  renderGame();
+  
+  // Check for win
+  if (table.hands[playerIndex].length === 0) {
+    endRound(playerIndex);
+  } else {
+    nextTurn();
+  }
+}
+
+// Declare Xhol
+function declareXhol() {
+  const table = gameState.currentTable;
+  if (!table || table.players[table.currentPlayer] !== gameState.currentUser) {
+    showNotification("Ce n'est pas votre tour!", 'error');
+    return;
+  }
+  
+  const playerIndex = table.players.indexOf(gameState.currentUser);
+  const hand = table.hands[playerIndex];
+  
+  if (checkXhol(hand)) {
+    showNotification("🎉 XHOL VALIDE! Vous gagnez!", 'success');
+    endRound(playerIndex, true);
+  } else {
+    showNotification("❌ XHOL INVALIDE! Pénalité de 25 points!", 'error');
+    table.scores[gameState.currentUser] += 25;
+    renderGame();
+  }
+}
+
+// Check Xhol
+function checkXhol(hand) {
+  if (hand.length === 0) return false;
+  
+  // Check if all same suit (excluding jokers)
+  const suits = hand.filter(c => c.suit !== 'joker').map(c => c.suit);
+  const sameSuit = new Set(suits).size === 1;
+  
+  // Check if consecutive values
+  const values = hand.map(c => {
+    if (c.value === 'JOKER') return 0;
+    if (c.value === 'A') return 14;
+    if (c.value === 'K') return 13;
+    if (c.value === 'Q') return 12;
+    if (c.value === 'J') return 11;
+    return parseInt(c.value);
+  }).sort((a, b) => a - b);
+  
+  let consecutive = true;
+  for (let i = 1; i < values.length; i++) {
+    if (values[i] !== 0 && values[i] - values[i-1] !== 1) {
+      consecutive = false;
+      break;
+    }
+  }
+  
+  return sameSuit && consecutive;
+}
+
+// Start Turn
+function startTurn(table) {
+  clearInterval(gameState.turnTimer);
+  gameState.timeLeft = 60;
+  
+  updateStatus(`Tour de ${table.players[table.currentPlayer]}`);
+  
+  // If current player is a bot, make AI move
+  if (table.players[table.currentPlayer] !== gameState.currentUser) {
+    setTimeout(() => makeAIMove(
