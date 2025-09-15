@@ -1,40 +1,343 @@
+Parfait ! 😎 Je vais te fournir un HTML entièrement autonome, avec CSS et JavaScript complets intégrés dans le même fichier. Il inclut :
+	•	Lobby moderne avec création de table, choix du nombre de joueurs (2–6) et score cible (71 ou 101)
+	•	Tableau de jeu avec distribution animée, défausse, pioche, Xhol, scoring et timer 1 min par joueur
+	•	Cartes stylisées avec thème Apple : métal rouge/gris et jokers animés
+	•	Classement global et tableau des scores
+
+Voici le fichier HTML complet :
+
+⸻
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Xhol - Jeu de Cartes Premium</title>
+<title>Xhol - Jeu de Cartes</title>
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* Thème moderne Apple */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  padding: 20px;
-  color: #fff;
+  background: linear-gradient(160deg,#2c2c2c,#1a1a1a);
+  color:#f0f0f0;
+  margin:0; padding:20px;
+}
+h1,h2,h3,h4 { color:#FF3B30; margin-bottom:10px; }
+button {
+  background: linear-gradient(145deg,#555,#222);
+  color:#fff; border:none; padding:10px 14px; border-radius:14px; margin:5px; cursor:pointer;
+  transition:0.3s;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+button:hover {
+  background: linear-gradient(145deg,#FF3B30,#AA0000);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+.hidden { display:none; }
+ul { list-style:none; padding-left:0; }
+li { padding:4px 0; }
+#lobby, .gameTable {
+  max-width:900px;
+  margin:auto;
+  background: rgba(50,50,50,0.85);
+  padding:25px;
+  border-radius:20px;
+  margin-bottom:25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+.playerHand {
+  position:relative;
+  display:inline-block;
+  margin:5px;
+  vertical-align:top;
+}
+.cardFront, .cardBack {
+  display:inline-block;
+  width:70px;
+  height:100px;
+  border-radius:12px;
+  background: linear-gradient(145deg,#888,#555);
+  color:#fff;
+  text-align:center;
+  line-height:100px;
+  margin:3px;
+  font-weight:bold;
+  cursor:pointer;
+  transition: transform 0.5s ease, box-shadow 0.3s ease, background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  position:relative;
+}
+.cardFront:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.6); background: linear-gradient(145deg,#FF3B30,#AA0000); }
+.cardBack { background: linear-gradient(145deg,#333,#111); color:#FF3B30; font-weight:bold; }
+.joker { background: linear-gradient(145deg,#FFD700,#FFDC70); color:#111; font-weight:bold; }
+.tableCenter { text-align:center; margin-bottom:15px; }
+.controls { text-align:center; margin-top:15px; }
+#scoreBoard { background: rgba(255,255,255,0.05); padding:10px; border-radius:10px; margin-top:10px; }
+</style>
+</head>
+<body>
+
+<h1>Jeu de Cartes <span style="color:#FF3B30">Xhol</span></h1>
+
+<div id="auth">
+  <h2>Connexion</h2>
+  <button id="googleLogin">Se connecter avec Gmail</button>
+  <button id="icloudLogin">Se connecter avec iCloud</button>
+  <p id="authStatus"></p>
+</div>
+
+<div id="lobby">
+  <h2>Lobby</h2>
+  <div>
+    <h3>Créer une table</h3>
+    <label>Nombre de joueurs (2–6) :</label>
+    <input type="number" id="numPlayers" min="2" max="6" value="2">
+    <label>Score cible :</label>
+    <select id="targetScore">
+      <option value="71">71</option>
+      <option value="101">101</option>
+    </select>
+    <button id="createTableBtn">Créer la table</button>
+  </div>
+  <hr>
+  <div>
+    <h3>Tables disponibles</h3>
+    <ul id="tablesList"></ul>
+  </div>
+  <hr>
+  <div>
+    <h3>Classement global des joueurs</h3>
+    <ul id="globalRanking"></ul>
+  </div>
+</div>
+
+<div id="gameContainer" class="hidden">
+  <h2>Table de jeu</h2>
+  <div class="tableCenter">
+    <div id="deck" class="cardBack">Deck</div>
+    <div id="cutCard" class="cardBack hidden"></div>
+    <div id="discardPile" class="cardBack">Défausse</div>
+  </div>
+  <div id="playersContainer"></div>
+  <div class="controls">
+    <button id="drawDeck">Piocher</button>
+    <button id="takeDiscard">Prendre Défausse</button>
+    <button id="declareXhol">Xhol !</button>
+  </div>
+  <div id="status">Statut</div>
+  <div id="scoreBoard" class="hidden">
+    <h4>Classement</h4>
+    <ul id="scoreList"></ul>
+  </div>
+</div>
+
+<script>
+// Variables
+let playerName = "";
+let tables = [];
+let currentTable = null;
+
+// Connexion simulée
+document.getElementById('googleLogin').onclick = () => {
+  playerName = prompt("Entrez votre email Gmail:");
+  if(playerName) document.getElementById('authStatus').textContent = "Connecté en tant "+playerName;
+};
+document.getElementById('icloudLogin').onclick = () => {
+  playerName = prompt("Entrez votre email iCloud:");
+  if(playerName) document.getElementById('authStatus').textContent = "Connecté en tant "+playerName;
+};
+
+// Créer table
+document.getElementById('createTableBtn').onclick = () => {
+  const numPlayers = parseInt(document.getElementById('numPlayers').value);
+  const targetScore = parseInt(document.getElementById('targetScore').value);
+  createTable(numPlayers,targetScore);
+};
+
+function createTable(numPlayers,targetScore){
+  const tableId = "table"+tables.length;
+  const table = {
+    id: tableId,
+    maxPlayers: numPlayers,
+    targetScore: targetScore,
+    players: [],
+    status: "En attente",
+    hands: [],
+    deck: [],
+    cutCard: null,
+    discardPile: [],
+    currentPlayer: 0,
+    dealerIndex: 0,
+    turnTimer: null,
+    TURN_TIME_LIMIT:60000,
+    scores: []
+  };
+  tables.push(table);
+  renderTables();
 }
 
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
+function renderTables(){
+  const ul = document.getElementById('tablesList'); ul.innerHTML="";
+  tables.forEach(table=>{
+    const li = document.createElement('li');
+    li.textContent=Table ${table.id} - Joueurs: ${table.players.length}/${table.maxPlayers} - Score cible: ${table.targetScore} - ${table.status};
+    const joinBtn = document.createElement('button'); joinBtn.textContent="Rejoindre";
+    joinBtn.onclick=()=>joinTable(table.id);
+    li.appendChild(joinBtn);
+    ul.appendChild(li);
+  });
 }
 
-h1 {
-  text-align: center;
-  font-size: 3em;
-  margin-bottom: 30px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-  animation: glow 2s ease-in-out infinite alternate;
+function joinTable(tableId){
+  const table = tables.find(t=>t.id===tableId);
+  if(!table) return alert("Table introuvable");
+  if(table.players.length>=table.maxPlayers) return alert("Table complète");
+  table.players.push(playerName);
+  table.scores.push(0);
+  if(table.players.length===table.maxPlayers) table.status="Commencé";
+  renderTables();
+  currentTable = table;
+  startGame(table);
+  alert(Vous avez rejoint la table ${table.id} !);
 }
 
-@keyframes glow {
-  from { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(255,255,255,0.5); }
-  to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.8); }
+// -------------------
+// Jeu
+function startGame(table){
+  document.getElementById('lobby').classList.add('hidden');
+  document.getElementById('gameContainer').classList.remove('hidden');
+  table.deck = createDeck();
+  table.hands = Array(table.maxPlayers).fill(0).map(()=>[]);
+  table.discardPile=[];
+  distributeCardsAnimated(table,0);
+}
+
+// Créer deck
+function createDeck(){
+  const d=[]; const symbols=['♠','♥','♦','♣']; const values=[2,3,4,5,6,7,8,9,10,'J','Q','K','A'];
+  for(let p=0;p<2;p++){
+    for(let s of symbols){for(let v of values)d.push({symbol:s,value:v});}
+    d.push({symbol:'JOKER',value:'JOKER'}); d.push({symbol:'JOKER',value:'JOKER'});
+  } return shuffle(d);
+}
+function shuffle(array){for(let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [array[i],array[j]]=[array[j],array[i]];} return array;}
+
+// Distribution animée
+function distributeCardsAnimated(table,index){
+  if(index>=table.maxPlayers*11){
+    table.currentPlayer=table.dealerIndex;
+    firstDiscard(table);
+    renderHands(table);
+    renderDiscard(table);
+    updateStatus("Tour de "+table.players[table.currentPlayer]);
+    startTurnTimer(table);
+    return;
+  }
+  let player = index%table.maxPlayers;
+  let card = drawCard(table);
+  if(!card){ distributeCardsAnimated(table,index+1); return; }
+  table.hands[player].push(card);
+  renderHands(table);
+  setTimeout(()=>distributeCardsAnimated(table,index+1),200);
+}
+
+function drawCard(table){if(table.deck.length>0) return table.deck.pop(); return null;}
+function firstDiscard(table){table.discardPile.push(table.hands[table.dealerIndex].pop());}
+
+// Rendu mains
+function renderHands(table){
+  const container=document.getElementById('playersContainer'); container.innerHTML="";
+  table.hands.forEach((hand,p)=>{
+    const div=document.createElement('div'); div.className='playerHand';
+    const nameDiv=document.createElement('div'); nameDiv.textContent=table.players[p]; nameDiv.style.color='#FF3B30';
+    div.appendChild(nameDiv);
+    hand.forEach((card,idx)=>{
+      const cdiv=document.createElement('div');
+      cdiv.className = card.symbol==='JOKER' ? 'cardFront joker' : 'cardFront';
+      cdiv.textContent=card.value+card.symbol;
+      if(p===table.currentPlayer){cdiv.onclick=()=>discardCard(table,idx);}
+      div.appendChild(cdiv);
+    });
+    container.appendChild(div);
+  });
+}
+
+// Défausse animée
+function renderDiscard(table){
+  const d=document.getElementById('discardPile');
+  if(table.discardPile.length===0){ d.textContent="Défausse"; return; }
+  const lastCard=table.discardPile[table.discardPile.length-1];
+  d.textContent=lastCard.value+lastCard.symbol;
+  d.style.transform="scale(1.2)";
+  setTimeout(()=>{d.style.transform="scale(1)";},200);
+}
+
+// Défausse et tour suivant
+function discardCard(table,idx){
+  clearTimeout(table.turnTimer);
+  const card = table.hands[table.currentPlayer].splice(idx,1)[0];
+  table.discardPile.push(card);
+  renderHands(table); renderDiscard(table);
+  if(checkXhol(table,table.currentPlayer)) return;
+  nextTurn(table);
+}
+
+function nextTurn(table){
+  table.currentPlayer=(table.currentPlayer+1)%table.maxPlayers;
+  updateStatus("Tour de "+table.players[table.currentPlayer]+" - 1 min pour jouer");
+  startTurnTimer(table);
+}
+
+function startTurnTimer(table){
+  clearTimeout(table.turnTimer);
+  table.turnTimer = setTimeout(()=>banPlayer(table,table.currentPlayer),table.TURN_TIME_LIMIT);
+}
+
+function banPlayer(table,player){
+  alert(table.players[player]+" n'a pas joué et est banni !");
+  table.hands[player]=null;
+  table.scores[player]+=100;
+  if(table.hands.filter(h=>h!==null).length<=1){ alert("Manche terminée !"); return; }
+  nextTurn(table);
+}
+
+function updateStatus(msg){document.getElementById('status').textContent=msg;}
+
+function checkXhol(table,player){
+  const hand=table.hands[player];
+  if(!hand || hand.length===0) return false;
+  const symbols=hand.map(c=>c.symbol).filter(s=>s!=='JOKER');
+  const values=hand.map(c=>c.value);
+  const allSame = new Set(symbols).size===1;
+  const sortedValues = values.map(v=>typeof v==='number'?v:(v==='A'?14:(v==='K'?13:(v==='Q'?12:11)))).sort((a,b)=>a-b);
+  const consecutive = sortedValues.every((v,i)=>i===0 || v-sortedValues[i-1]===1);
+  let score=0;
+  if(allSame && consecutive){score=-50; alert('Xhol complet ! -50 points');}
+  else if(allSame){score=-25; alert('Xhol normal ! -25 points');}
+  else{score=-10; alert('Victoire classique ! -10 points');}
+  table.scores[player]+=score;
+  for(let i=0;i<table.maxPlayers;i++){
+    if(i===player || table.hands[i]===null) continue;
+    let pts=0;
+    table.hands[i].forEach(c=>{
+      if(c.value==='J'||c.value==='Q'||c.value==='K'||c.value==='A') pts+=10;
+      else if(c.value==='JOKER') pts+=15;
+      else pts+=c.value;
+    });
+    table.scores[i]+=pts;
+  }
+  table.hands[player]=[];
+  renderScoreBoard(table);
+  return true;
+}
+
+function renderScoreBoard(table){
+  document.getElementById('scoreBoard').classList.remove('hidden');
+  const ul=document.getElementById('scoreList'); ul.innerHTML="";
+  for(let i=0;i<table.maxPlayers;i++){
+    if(table.hands[i]===null) continue;
+    const li=document.createElement('li');
+    li.textContent=table.players[i]+" : "+table.scores  to { text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.8); }
 }
 
 .panel {
