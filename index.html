@@ -1,1171 +1,615 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head
-  >
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Msplomberie - Jeu de Cartes</title>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<title>Jeu de table ultra complet - Style Poker Claude Opus 4.1</title>
+<style>
+  /* RESET & BASE */
+  * { margin:0; padding:0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%;
+    background: linear-gradient(120deg, #100700, #3b0f00);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #d1f0d1;
+    overflow: hidden;
+    user-select: none;
+  }
 
-  <style
-    >
-    /* == Styles généraux == */
-    body
-    {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Roboto', Arial, sans-serif;
-      background-color: #1b1120;
-      color: white;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      user-select: none;
-    }
+  #app {
+    position: relative;
+    width: 960px;
+    height: 720px;
+    margin: 20px auto;
+    background: radial-gradient(circle at center, #092209 40%, #021202 100%);
+    border-radius: 30px;
+    box-shadow: inset 0 0 60px #106010, 0 0 40px #194919;
+    display: flex;
+    flex-direction: column;
+  }
 
-    a
-    {
-      color: inherit;
-      text-decoration: none;
-      cursor: pointer;
-    }
+  /* HEADER */
+  header#game-header {
+    height: 48px;
+    background: linear-gradient(90deg, #205020, #183818);
+    border-bottom: 2px solid #38a838;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    font-weight: 700;
+    color: #c8f2c8;
+    letter-spacing: 0.07em;
+    box-shadow: 0 3px 8px #0f470f;
+  }
 
-    header
-    {
-      background-color: #2a1f34;
-      padding: 15px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 0 12px #5d3e84;
-      color: #e0dfff;
-      user-select: none;
-    }
+  #header-gems, #header-coins {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
 
-    .user-info
-    {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
+  #header-gems-icon, #header-coins-icon {
+    width: 20px;
+    height: 20px;
+  }
 
-    .user-info img
-    {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #ffd932;
-      object-fit: cover;
-    }
+  /* MAIN TABLE CONTAINER */
+  #table-view {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
 
-    .user-info .username
-    {
-      font-weight: 700;
-      font-size: 1.25rem;
-      user-select: text;
-    }
+  #main-table {
+    position: relative;
+    width: 630px;
+    height: 630px;
+    border-radius: 50%;
+    background: radial-gradient(circle at center, #184818, #0a210a);
+    box-shadow:
+      0 0 50px 10px #22992255 inset,
+      0 0 60px 15px #116600;
+  }
 
-    .user-stats
-    {
-      display: flex;
-      gap: 12px;
-      font-size: 0.9rem;
-      color: #bfc5ff;
-      align-items: center;
-      user-select: text;
-    }
+  /* TABLE CENTER */
+  #table-center {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(ellipse at center, #267026, #0d2c0d);
+    border-radius: 50%;
+    box-shadow: 0 0 25px 6px #2ecc2e inset;
+    border: 3px solid #34cb34;
+    z-index: 20;
+  }
 
-    nav a
-    {
-      margin-left: 20px;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 6px;
-      background-color: #3b2f5a;
-      color: #bfc5ff;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
+  /* PLAYER AVATARS CIRCULAR */
+  .player-slot {
+    position: absolute;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: 3px solid #334433;
+    box-shadow: 0 0 12px #224422;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    z-index: 30;
+  }
 
-    nav a:hover,
-    nav a:focus
-    {
-      background-color: #ffd932;
-      color: #2c2100;
-      outline: none;
-    }
+  .player-slot.active {
+    border-color: #70ef70;
+    box-shadow: 0 0 20px 5px #82f682;
+    transform: scale(1.1);
+  }
 
-    #auth-section
-    {
-      min-height: 100vh;
-      background-color: #171025;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 50px 30px;
-      gap: 28px;
-      user-select: none;
-    }
+  .player-name-tag {
+    position: absolute;
+    text-align: center;
+    color: #a4fca4;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-shadow:
+      0 0 4px #2e7d2e,
+      0 0 6px #1f5d1f;
+    z-index: 40;
+    pointer-events: none;
+  }
 
-    .auth-box
-    {
-      background-color: #342f53;
-      border-radius: 18px;
-      box-shadow: 0 0 40px #6e58bfaa;
-      padding: 36px;
-      width: 360px;
-      max-width: 90vw;
-      color: #dedfff;
-    }
+  /* CARDS HAND */
+  #player-hand {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 760px;
+    height: 130px;
+    background: rgba(20, 60, 20, 0.92);
+    border-radius: 20px;
+    box-shadow: 0 0 20px #1f9f1f;
+    padding: 10px 20px;
+    display: flex;
+    overflow-x: auto;
+    gap: 14px;
+    align-items: center;
+    user-select: none;
+    z-index: 50;
+  }
 
-    .auth-box h2
-    {
-      color: #ffd932;
-      font-weight: 700;
-      font-size: 2rem;
-      text-align: center;
-      margin-bottom: 28px;
-      user-select: none;
-    }
+  .card {
+    flex: 0 0 auto;
+    width: 70px;
+    height: 105px;
+    border-radius: 15px;
+    background: white;
+    box-shadow:
+      0 8px 15px rgba(0,0,0,0.35),
+      inset 0 0 14px #dbeedd;
+    border: 3px solid #478347;
+    color: #2b6d2b;
+    font-weight: 900;
+    font-size: 1.55rem;
+    text-align: center;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    transition:
+      box-shadow 0.3s ease,
+      transform 0.35s cubic-bezier(0.6, 0, 0.4, 1);
+    user-select: none;
+    position: relative;
+  }
 
-    label
-    {
-      display: block;
-      margin-bottom: 6px;
-      color: #bac0ff;
-      font-weight: 600;
-      user-select: none;
-    }
+  .card.joker {
+    color: #d83a3a;
+  }
 
-    input[type="email"],
-    input[type="password"]
-    {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 1rem;
-      border-radius: 6px;
-      border: none;
-      background-color: #3a2f7f;
-      color: #dcdfff;
-      outline-offset: 2px;
-      outline-color: #9a86ef;
-      margin-bottom: 18px;
-      font-family: inherit;
-      user-select: text;
-    }
+  .card .value {
+    pointer-events: none;
+  }
 
-    input[type="email"]:focus,
-    input[type="password"]:focus
-    {
-      background-color: #483d99;
-      outline-color: #ffd932;
-    }
+  .card .suit {
+    font-size: 2.35rem;
+    pointer-events: none;
+  }
 
-    input[type="submit"],
-    button.switch-btn
-    {
-      width: 100%;
-      padding: 14px 0;
-      font-size: 1.125rem;
-      font-weight: 700;
-      border-radius: 12px;
-      border: none;
-      background-color: #ffd932;
-      color: #2c2000;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
+  .card.selected {
+    outline: 4px solid #aaf3a9;
+    box-shadow: 0 0 30px 6px #7ddd7a;
+    transform: translateY(-18px) scale(1.15);
+    z-index: 100;
+  }
 
-    input[type="submit"]:hover,
-    button.switch-btn:hover
-    {
-      background-color: #fff348;
-    }
+  /* SCROLLBAR */
+  #player-hand::-webkit-scrollbar {
+    height: 10px;
+  }
+  #player-hand::-webkit-scrollbar-track {
+    background: #072007;
+    border-radius: 15px;
+  }
+  #player-hand::-webkit-scrollbar-thumb {
+    background: #459e46;
+    border-radius: 15px;
+  }
 
-    button.switch-btn
-    {
-      background: none;
-      color: #[94a1ff];
-      font-weight: 600;
-      text-decoration: underline;
-      margin-top: 14px;
-      padding: 0;
-      user-select: text;
-      border-radius: 0;
-    }
+  /* SIDE BUTTONS */
+  #left-panel, #right-panel {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    user-select: none;
+    z-index: 60;
+  }
+  #left-panel {
+    top: 70px;
+    left: 20px;
+  }
+  #right-panel {
+    top: 250px;
+    right: 20px;
+  }
 
-    .error-message
-    {
-      color: #f5625c;
-      font-weight: 700;
-      min-height: 20px;
-      margin-bottom: 18px;
-      user-select: none;
-    }
+  button.action-btn {
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 1.15rem;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(135deg, #238723, #105210);
+    color: #d4f7d4;
+    box-shadow:
+      0 0 15px #3ae63a,
+      inset 0 0 25px rgba(0,100,0,0.8);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+  }
+  button.action-btn:hover {
+    background: linear-gradient(135deg, #36ef36, #1fab1f);
+    box-shadow:
+      0 0 28px #20c420,
+      inset 0 0 30px #2cf52c;
+    transform: scale(1.12);
+  }
 
-    .success-message
-    {
-      color: #6aff85;
-      font-weight: 700;
-      margin-top: 4px;
-      min-height: 20px;
-      user-select: none;
-    }
+  /* ICON BUTTONS */
+  button.icon-btn {
+    width: 54px;
+    height: 54px;
+    font-size: 28px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(160deg, #293e29, #102310);
+    color: #9bee9b;
+    box-shadow: 0 0 10px #4dec4d;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+  }
+  button.icon-btn:hover {
+    background: linear-gradient(160deg, #46f046, #23d823);
+    box-shadow: 0 0 25px #65fa66;
+    transform: scale(1.15);
+  }
 
-    .hidden
-    {
-      display: none !important;
-    }
+  /* LEADERBOARD BUTTON */
+  #leaderboard-button {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    font-weight: 900;
+    font-size: 1.3rem;
+    background: linear-gradient(120deg, #6b3000, #bc7200);
+    color: #ffe100;
+    padding: 14px 28px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    box-shadow:
+      0 0 26px #ffd400,
+      inset 0 0 14px #f5e000;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    z-index: 100;
+  }
+  #leaderboard-button:hover {
+    background: linear-gradient(120deg, #844300, #deb700);
+    box-shadow: 0 0 36px #ffd900, inset 0 0 18px #fbe024;
+    transform: scale(1.1);
+  }
 
-    /* Lobby Styles */
-    #lobby
-    {
-      display: none;
-      flex-grow: 1;
-      flex-direction: column;
-      align-items: center;
-      background: linear-gradient(135deg, #240b33 0%, #12081b 100%);
-      min-height: 90vh;
-      padding: 40px 30px;
-      user-select: none;
-    }
+  /* NOTIFICATIONS */
+  #notification {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 22px;
+    background: rgba(35, 95, 35, 0.95);
+    font-weight: 700;
+    border-radius: 22px;
+    box-shadow: 0 0 18px #3ce53c;
+    color: #d1f6d1;
+    user-select: none;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.48s ease;
+    z-index: 150;
+  }
+  #notification.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
-    #lobby.active
-    {
-      display: flex;
-    }
+  /* CHAT INTERFACE */
+  #chat-container {
+    position: absolute;
+    bottom: 180px;
+    right: 30px;
+    width: 280px;
+    max-height: 320px;
+    background: rgba(15, 40, 15, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 0 32px #2be22b;
+    color: #b2f7b2;
+    display: flex;
+    flex-direction: column;
+    z-index: 140;
+    user-select: text;
+  }
+  #chat-header {
+    padding: 12px 16px;
+    border-bottom: 2px solid #36de36;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #aeffae;
+  }
+  #chat-messages {
+    flex: 1;
+    padding: 10px 14px;
+    overflow-y: auto;
+    font-size: 0.9rem;
+    user-select: text;
+  }
+  #chat-input-container {
+    display: flex;
+    padding: 6px 10px;
+    background-color: #164e16aa;
+    border-radius: 0 0 16px 16px;
+  }
+  #chat-input {
+    flex-grow: 1;
+    padding: 8px 14px;
+    border-radius: 18px;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    background: #245a24;
+    color: #dff0dff0;
+  }
+  #chat-input::placeholder {
+    color: #a5d7a5;
+    opacity: 0.7;
+  }
+  #chat-send-btn {
+    padding: 8px 16px;
+    border-radius: 18px;
+    border: none;
+    margin-left: 8px;
+    background: linear-gradient(140deg, #36de36, #1a8c1a);
+    color: #e7ffe7;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  #chat-send-btn:hover {
+    background: linear-gradient(140deg, #4fff4f, #27ad27);
+  }
 
-    #lobby header
-    {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 40px;
-      user-select: none;
-    }
-
-    #lobby .user-info
-    {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      color: #b6b7ee;
-      user-select: none;
-    }
-
-    #lobby .user-info img
-    {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 2px solid #ffd932;
-      object-fit: cover;
-      user-select: none;
-    }
-
-    #lobby .username
-    {
-      font-weight: 700;
-      font-size: 1.35rem;
-      user-select: text;
-    }
-
-    #lobby .user-stats
-    {
-      font-size: 1rem;
-      color: #c2bfff;
-    }
-
-    #lobby nav a
-    {
-      font-weight: 600;
-      color: #b6b7ee;
-      background-color: #3a2f5a;
-      padding: 10px 18px;
-      border-radius: 10px;
-      text-decoration: none;
-      margin-left: 18px;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-
-    #lobby nav a:hover,
-    #lobby nav a:focus
-    {
-      background-color: #ffd932;
-      color: #2c2100;
-      outline: none;
-    }
-
-    #lobby .modes
-    {
-      display: flex;
-      gap: 48px;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 960px;
-      width: 100%;
-      user-select: none;
-    }
-
-    .mode-card
-    {
-      width: 280px;
-      background-color: #412e7a;
-      border-radius: 22px;
-      padding: 36px 22px;
-      box-shadow: 0 0 48px #7052bcaa;
-      color: #b5b3ee;
-      cursor: pointer;
-      text-align: center;
-      transition: box-shadow 0.3s ease, transform 0.3s ease;
-      user-select: none;
-    }
-
-    .mode-card:hover,
-    .mode-card:focus
-    {
-      box-shadow: 0 0 72px #f3d12399;
-      transform: scale(1.05);
-      color: #ffd932;
-      outline: none;
-    }
-
-    .mode-card img
-    {
-      margin-bottom: 26px;
-      width: 120px;
-      user-select: none;
-      pointer-events: none;
-    }
-
-    .mode-card .title
-    {
-      font-weight: 700;
-      font-size: 1.80rem;
-      margin-bottom: 14px;
-      letter-spacing: 0.05em;
-      user-select: none;
-    }
-
-    .mode-card .desc
-    {
-      font-size: 1.05rem;
-      user-select: none;
-      color: #b5b2eeaa;
-    }
-
-    /* Game Styles */
-    #game
-    {
-      display: none;
-      flex-grow: 1;
-      flex-direction: column;
-      align-items: center;
-      background-color: #220c46;
-      min-height: 90vh;
-      padding: 40px 30px;
-      user-select: none;
-    }
-
-    #game.active
-    {
-      display: flex;
-    }
-
-    #game header
-    {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 36px;
-      user-select: none;
-    }
-
-    #game .user-info
-    {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      color: #b9b8f5;
-      user-select: none;
-    }
-
-    #game .user-info img
-    {
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      border: 3px solid #ffd932;
-      object-fit: cover;
-      user-select: none;
-    }
-
-    #game .username
-    {
-      user-select: text;
-      font-weight: 700;
-      font-size: 1.5rem;
-    }
-
-    #game nav a
-    {
-      padding: 10px 20px;
-      background-color: #3a2f60;
-      color: #b9b7f1;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-left: 18px;
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-
-    #game nav a:hover,
-    #game nav a:focus
-    {
-      background-color: #ffd932;
-      color: #2c2100;
-      outline: none;
-    }
-
-    #game .table-layout
-    {
-      width: 100%;
-      max-width: 960px;
-      background-color: #412e89;
-      border-radius: 28px;
-      padding: 38px 28px 100px;
-      box-shadow: 0 0 54px #7a5ab6cc;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-    }
-
-    #game .drop-zones
-    {
-      display: flex;
-      gap: 36px;
-      width: 100%;
-      margin-bottom: 42px;
-      user-select: none;
-    }
-
-    .drop-zone
-    {
-      flex-basis: 48.5%;
-      background-color: #512d7a;
-      border-radius: 20px;
-      border: 2px dashed #a088df;
-      height: 150px;
-      box-shadow: inset 0 0 30px #9f8accdd;
-      padding: 12px 15px;
-      overflow-x: auto;
-      display: flex;
-      gap: 18px;
-      align-items: center;
-      user-select: none;
-      cursor: default;
-    }
-
-    .drop-zone.drag-over
-    {
-      background-color: #bdaafaff;
-      border-color: #c3adff;
-    }
-
-    #game .player-hand
-    {
-      width: 100%;
-      max-width: 960px;
-      height: 120px;
-      background-color: #493aa4;
-      border-radius: 26px;
-      box-shadow: 0 0 74px #9276fcdc;
-      padding: 20px;
-      overflow-x: auto;
-      display: flex;
-      gap: 20px;
-      user-select: none;
-    }
-
-    .card
-    {
-      width: 95px;
-      height: 130px;
-      background-color: #1f1961;
-      border-radius: 22px;
-      border: 3px solid transparent;
-      box-shadow: 0 0 14px rgba(0,0,0,0.85);
-      color: #ebe9ff;
-      font-weight: 700;
-      cursor: grab;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 12px 15px;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      user-select: none;
-      user-drag: none;
-    }
-
-    .card.red
-    {
-      color: #f35858;
-    }
-
-    .card.dragging
-    {
-      cursor: grabbing;
-      opacity: 0.45;
-      border-color: #febd49;
-      box-shadow: 0 0 68px #febd49;
-      user-select: none;
-    }
-
-    #xhol-btn
-    {
-      margin-top: 52px;
-      padding: 20px 68px;
-      font-size: 1.88rem;
-      font-weight: 700;
-      color: #312240;
-      background-color: #fed336;
-      border: none;
-      border-radius: 32px;
-      box-shadow: 0 0 90px #ffef68bb;
-      user-select: none;
-      cursor: not-allowed;
-      opacity: 0.38;
-      transition: opacity 0.3s ease;
-    }
-
-    #xhol-btn.enabled
-    {
-      opacity: 1;
-      cursor: pointer;
-      box-shadow: 0 0 130px #fed336;
-    }
-
-    footer
-    {
-      background-color: #341f6e;
-      color: #b1aff9;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 28px 20px;
-      text-align: center;
-      user-select: none;
-    }
-  </style>
+  /* Scrollbar chat */
+  #chat-messages::-webkit-scrollbar {
+    width: 8px;
+  }
+  #chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  #chat-messages::-webkit-scrollbar-thumb {
+    background: #2aa32a;
+    border-radius: 16px;
+  }
+</style>
 </head>
 <body>
-  <section id="auth-section">
-    <div class="auth-box" id="login-card">
-      <h2>
-        Connexion
-      </h2>
-      <form id="login-form" autocomplete="off" novalidate>
-        <label for="login-email">
-          E-mail
-        </label>
-        <input type="email" id="login-email" autocomplete="username" required />
-        <label for="login-password">
-          Mot de passe
-        </label>
-        <input type="password" id="login-password" autocomplete="current-password" minlength="6" required />
-        <input type="submit" value="Se connecter" />
-        <p class="error-message" id="login-error" aria-live="assertive"></p>
-      </form>
-      <button class="switch-btn" id="show-register-btn">
-        Créer un compte
-      </button>
-    </div>
-    <div class="auth-box hidden" id="register-card">
-      <h2>
-        Créer un compte
-      </h2>
-      <form id="register-form" autocomplete="off" novalidate>
-        <label for="register-email">
-          E-mail
-        </label>
-        <input type="email" id="register-email" autocomplete="username" required />
-        <label for="register-password">
-          Mot de passe
-        </label>
-        <input type="password" id="register-password" autocomplete="new-password" minlength="6" required />
-        <input type="submit" value="S’inscrire" />
-        <p class="error-message" id="register-error" aria-live="assertive"></p>
-      </form>
-      <button class="switch-btn" id="show-login-btn">
-        Déjà un compte
-      </button>
-    </div>
-  </section>
-
-  <main id="lobby" class="hidden" aria-label="Lobby">
-    <header>
-      <div class="user-info" aria-label="Profil joueur">
-        <img id="user-avatar" />
-        <span class="username" id="user-pseudo"></span>
-        <div class="user-stats" id="user-stats"></div>
+  <div id="app" role="main" aria-label="Jeu de table de poker immersif">
+    <header id="game-header" aria-live="polite">
+      <span>MS Plomberie Poker Pro</span>
+      <div id="header-gems" aria-label="Gemmes">
+        <svg id="header-gems-icon" fill="#80ff80" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+        <span>35</span>
       </div>
-      <nav>
-        <a href="#" id="logout-btn">Déconnexion</a>
-      </nav>
+      <div id="header-coins" aria-label="Pièces d'or">
+        <svg id="header-coins-icon" fill="#ffdd00" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/></svg>
+        <span>70,780</span>
+      </div>
     </header>
 
-    <section class="modes" aria-label="Choix du Mode" role="list">
-      <article class="mode-card" id="mode-casual" tabindex="0" role="button" aria-pressed="false">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="Icone Casual" />
-        <h3 class="title">Casual</h3>
-        <p class="desc">Jouer pour le plaisir</p>
-      </article>
-      <article class="mode-card" id="mode-tournament" tabindex="0" role="button" aria-pressed="false">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616601.png" alt="Icone Tournament" />
-        <h3 class="title">Tournament</h3>
-        <p class="desc">Défiez les meilleurs</p>
-      </article>
-    </section>
-  </main>
-
-  <main id="game" class="hidden" aria-label="Jeu">
-    <header>
-      <div class="user-info" aria-label="Profil joueur">
-        <img id="game-avatar" />
-        <span class="username" id="game-pseudo"></span>
-        <div class="user-stats" id="game-stats"></div>
+    <main id="table-view" role="region" aria-label="Table de poker principale">
+      <div id="main-table" aria-label="Table de jeu circulaire">
+        <div id="table-center" aria-label="Centre de la table"></div>
       </div>
-      <nav>
-        <a href="#" id="end-game">Quitter la Partie</a>
-        <a href="#" id="logout-game">Déconnexion</a>
-      </nav>
-    </header>
+    </main>
 
-    <section class="game-area">
-      <section class="table-layout">
-        <div id="drop-zone-1" class="drop-zone" aria-label="Zone 1"></div>
-        <div id="drop-zone-2" class="drop-zone" aria-label="Zone 2"></div>
-      </section>
+    <section id="player-hand" aria-label="Main du joueur"></section>
 
-      <section id="player-hand" class="player-hand" aria-label="Main du Joueur"></section>
+    <nav id="left-panel" aria-label="Boutons d'actions secondaires">
+      <button class="action-btn" id="spin-btn" aria-pressed="false" aria-label="Lancer la roue Spin">Spin</button>
+      <button class="action-btn" id="mission-btn" aria-pressed="false" aria-label="Voir les Missions">Mission</button>
+      <button class="action-btn" id="shop-btn" aria-pressed="false" aria-label="Ouvrir la boutique">Shop</button>
+    </nav>
 
-      <button id="xhol-btn" disabled>Xhol</button>
+    <nav id="right-panel" aria-label="Boutons d'actions principales">
+      <button class="icon-btn" id="chat-toggle" aria-pressed="false" aria-label="Ouvrir/Fermer le Chat">💬</button>
+      <button class="icon-btn" id="emoji-btn" aria-label="Ouvrir la fenêtre Émoticônes">😊</button>
+    </nav>
+
+    <button id="leaderboard-button" aria-label="Voir le classement">Leaderboard</button>
+
+    <div id="notification" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+    <section id="chat-container" aria-label="Discussion du jeu" hidden>
+      <header id="chat-header">Chat</header>
+      <div id="chat-messages" role="log" aria-live="polite" aria-atomic="false" tabindex="0"></div>
+      <div id="chat-input-container">
+        <input id="chat-input" type="text" aria-label="Message chat" placeholder="Tapez un message…" autocomplete="off" />
+        <button id="chat-send-btn" aria-label="Envoyer le message">Envoyer</button>
+      </div>
     </section>
-  </main>
+  </div>
 
-  <footer>
-    © 2025 - Msplomberie - Tous droits réservés
-  </footer>
+  <script>
+  (() => {
+    // VARIABLES DE JEU
+    let players = [
+      { id: 1, name: 'ledigorica22', avatar: 'https://i.pravatar.cc/80?img=7', active: true },
+      { id: 2, name: 'mark1223', avatar: 'https://i.pravatar.cc/80?img=12', active: false },
+      { id: 3, name: 'anakonda34', avatar: 'https://i.pravatar.cc/80?img=20', active: false },
+      { id: 4, name: 'player4', avatar: 'https://i.pravatar.cc/80?img=44', active: false },
+      { id: 5, name: 'player5', avatar: 'https://i.pravatar.cc/80?img=30', active: false },
+      { id: 6, name: 'player6', avatar: 'https://i.pravatar.cc/80?img=11', active: false },
+      { id: 7, name: 'player7', avatar: 'https://i.pravatar.cc/80?img=32', active: false },
+      { id: 8, name: 'player8', avatar: 'https://i.pravatar.cc/80?img=25', active: false }
+    ];
 
-  <script
-    >
-    (() =>
-    {
-      const STORAGE_KEY = 'mspl_users';
+    let cards = [
+      { value: '3', suit: '♦', color: 'red' }, { value: '4', suit: '♣', color: 'black' }, { value: '4', suit: '♥', color: 'red' },
+      { value: '6', suit: '♠', color: 'black' }, { value: '8', suit: '♣', color: 'black' }, { value: '8', suit: '♥', color: 'red' },
+      { value: '8', suit: '♠', color: 'black' }, { value: '9', suit: '♦', color: 'red' }, { value: '9', suit: '♠', color: 'black' },
+      { value: 'A', suit: '♣', color: 'black' }, { value: 'A', suit: '♠', color: 'black' }, { value: 'A', suit: '♥', color: 'red' },
+      { value: '2', suit: '♠', color: 'black' },
+      { value: 'J', suit: 'Joker', color: 'red' }
+    ];
 
-      // DOM refs
-      const authSection = document.getElementById('auth-section');
-      const loginCard = document.getElementById('login-card');
-      const registerCard = document.getElementById('register-card');
+    const app = document.getElementById('app');
+    const mainTable = document.getElementById('main-table');
+    const handContainer = document.getElementById('player-hand');
+    const notification = document.getElementById('notification');
+    const chatContainer = document.getElementById('chat-container');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const chatSendBtn = document.getElementById('chat-send-btn');
+    const chatToggleBtn = document.getElementById('chat-toggle');
+    const emojiBtn = document.getElementById('emoji-btn');
+    const leaderboardBtn = document.getElementById('leaderboard-button');
 
-      const loginForm = document.getElementById('login-form');
-      const registerForm = document.getElementById('register-form');
+    let selectedCardIndex = null;
+    let chatOpen = false;
 
-      const toRegisterBtn = document.getElementById('show-register-btn');
-      const toLoginBtn = document.getElementById('show-login-btn');
-
-      const lobby = document.getElementById('lobby');
-      const logoutBtn = document.getElementById('logout-btn');
-
-      const modeCasual = document.getElementById('mode-casual');
-      const modeTournament = document.getElementById('mode-tournament');
-
-      const gameScreen = document.getElementById('game');
-      const logoutGameBtn = document.getElementById('logout-game');
-      const endGameBtn = document.getElementById('end-game');
-
-      const avatarLobby = document.getElementById('user-avatar');
-      const pseudoLobby = document.getElementById('user-pseudo');
-      const statsLobby = document.getElementById('user-stats');
-
-      const avatarGame = document.getElementById('game-avatar');
-      const pseudoGame = document.getElementById('game-pseudo');
-      const statsGame = document.getElementById('game-stats');
-
-      const dropZones = [
-        document.getElementById('drop-zone-1'),
-        document.getElementById('drop-zone-2'),
-      ];
-
-      const playerHand = document.getElementById('player-hand');
-      const xholBtn = document.getElementById('xhol-btn');
-
-      // State
-      let users = {};
-      let currentUser = null;
-      let draggedCard = null;
-      let deck = [];
-
-      // STORAGE helpers
-      const loadUsers = () =>
-      {
-        try
-        {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-        }
-        catch
-        {
-          return {};
-        }
-      };
-
-      const saveUsers = data =>
-      {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      };
-
-      const hashPassword = str =>
-      {
-        return btoa(unescape(encodeURIComponent(str)));
-      };
-
-      // UI switches
-      const showLogin = () =>
-      {
-        loginCard.classList.remove('hidden');
-        registerCard.classList.add('hidden');
-        clearMessages();
-      };
-
-      const showRegister = () =>
-      {
-        registerCard.classList.remove('hidden');
-        loginCard.classList.add('hidden');
-        clearMessages();
-      };
-
-      const clearMessages = () =>
-      {
-        document.getElementById('login-error').textContent = '';
-        document.getElementById('register-error').textContent = '';
-      };
-
-      // Load user profile data
-      const loadProfile = () =>
-      {
-        if (!currentUser)
-        {
-          return;
-        }
-        const profile = users[currentUser]?.profile;
-
-        if (!profile)
-        {
-          return;
-        }
-
-        const avatarIndex = (profile.pseudo.charCodeAt(0) + profile.niveau) % 99;
-        const avatarUrl = `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
-
-        avatarLobby.src = avatarUrl;
-        pseudoLobby.textContent = profile.pseudo;
-        statsLobby.innerHTML = `Niv: ${profile.niveau} | 💎 ${profile.gemes} | 💰 ${profile.pieces}`;
-
-        avatarGame.src = avatarUrl;
-        pseudoGame.textContent = profile.pseudo;
-        statsGame.innerHTML = `Niv: ${profile.niveau} | 💎 ${profile.gemes} | 💰 ${profile.pieces}`;
-      };
-
-      // View switches
-      const switchView = view =>
-      {
-        authSection.style.display = 'none';
-        lobby.style.display = 'none';
-        gameScreen.style.display = 'none';
-
-        if (view === 'auth')
-        {
-          authSection.style.display = 'flex';
-        }
-        else if (view === 'lobby')
-        {
-          lobby.style.display = 'flex';
-        }
-        else if (view === 'game')
-        {
-          gameScreen.style.display = 'flex';
-        }
-      };
-
-      // Auth event handlers
-      loginForm.addEventListener('submit', e =>
-      {
-        e.preventDefault();
-        clearMessages();
-
-        const email = loginForm.loginEmail.value.trim().toLowerCase();
-        const password = loginForm.loginPassword.value;
-
-        if (!email)
-        {
-          document.getElementById('login-error').textContent = 'Veuillez saisir un e-mail.';
-          return;
-        }
-
-        if (!password)
-        {
-          document.getElementById('login-error').textContent = 'Veuillez saisir un mot de passe.';
-          return;
-        }
-
-        users = loadUsers();
-
-        if (!(email in users))
-        {
-          document.getElementById('login-error').textContent = 'Utilisateur non trouvé.';
-          return;
-        }
-
-        if (users[email].password !== hashPassword(password))
-        {
-          document.getElementById('login-error').textContent = 'Mot de passe incorrect.';
-          return;
-        }
-
-        currentUser = email;
-        sessionStorage.setItem('mspl_user', currentUser);
-        loadProfile();
-        switchView('lobby');
+    // UTILITAIRE CREATION ELEMENT
+    function createEl(type, props = {}, ...children) {
+      const el = document.createElement(type);
+      for (let key in props) {
+        if (key === 'className') el.className = props[key];
+        else if (key === 'html') el.innerHTML = props[key];
+        else if (key.startsWith('on') && typeof props[key] === 'function') {
+          el.addEventListener(key.substring(2).toLowerCase(), props[key]);
+        } else el.setAttribute(key, props[key]);
+      }
+      children.forEach(child => {
+        if (typeof child === 'string') el.appendChild(document.createTextNode(child));
+        else if (child instanceof Node) el.appendChild(child);
       });
+      return el;
+    }
 
-      registerForm.addEventListener('submit', e =>
-      {
-        e.preventDefault();
-        clearMessages();
+    // AFFICHAGE JOUEURS AUTOUR TABLE
+    function renderPlayers() {
+      // Nettoyage avatars précédents
+      [...mainTable.querySelectorAll('.player-slot')].forEach(el => el.remove());
+      [...mainTable.querySelectorAll('.player-name-tag')].forEach(el => el.remove());
 
-        const email = registerForm.registerEmail.value.trim().toLowerCase();
-        const password = registerForm.registerPassword.value;
+      const cX = mainTable.clientWidth / 2;
+      const cY = mainTable.clientHeight / 2;
+      const radius = 280;
+      const angleStep = (2 * Math.PI) / players.length;
 
-        if (!email || !/\S+@\S+\.\S+/.test(email))
-        {
-          document.getElementById('register-error').textContent = 'Veuillez saisir un e-mail valide.';
-          return;
-        }
+      players.forEach((player, i) => {
+        let angle = i * angleStep - Math.PI / 2; // début en haut
+        let x = cX + radius * Math.cos(angle);
+        let y = cY + radius * Math.sin(angle);
 
-        if (!password || password.length < 6)
-        {
-          document.getElementById('register-error').textContent = 'Mot de passe trop court (min 6).';
-          return;
-        }
+        let avatar = createEl('div', {
+          className: 'player-slot' + (player.active ? ' active' : ''),
+          title: player.name,
+          style: `left:${x-45}px; top:${y-45}px; background-image: url(${player.avatar});`
+        });
+        mainTable.appendChild(avatar);
 
-        users = loadUsers();
-
-        if (email in users)
-        {
-          document.getElementById('register-error').textContent = 'Utilisateur déjà existant.';
-          return;
-        }
-
-        users[email] =
-        {
-          password: hashPassword(password),
-          profile:
-          {
-            pseudo: email.split('@')[0],
-            niveau: 1,
-            gemes: 35,
-            pieces: 10000,
-          },
-        };
-
-        saveUsers(users);
-
-        currentUser = email;
-        sessionStorage.setItem('mspl_user', currentUser);
-        loadProfile();
-        switchView('lobby');
+        let nameTag = createEl('div', {
+          className: 'player-name-tag',
+          style: `left:${x-35}px; top:${y+40}px;`
+        }, player.name);
+        mainTable.appendChild(nameTag);
       });
+    }
 
-      // User logout
-      logoutBtn.onclick = logoutGame;
-      logoutGameBtn.onclick = logoutGame;
-
-      function logoutGame()
-      {
-        currentUser = null;
-        sessionStorage.removeItem('mspl_user');
-        switchView('auth');
-      }
-
-      // Start game buttons
-      modeCasual.onclick = () =>
-      {
-        startGame('casual');
-      };
-
-      modeTournament.onclick = () =>
-      {
-        startGame('tournament');
-      };
-
-      const maxHandCards = 14;
-
-      // Start a new game session
-      function startGame(mode)
-      {
-        deck = createDeck();
-        shuffle(deck);
-
-        const handCards = deck.splice(0,maxHandCards);
-
-        renderHand(handCards);
-
-        dropZones.forEach(zone => zone.innerHTML = '');
-
-        updateXholButton();
-
-        switchView('game');
-      }
-
-      // Creates two decks merged, with 2 jokers total
-      function createDeck()
-      {
-        const suits = ['coeur', 'carreau', 'pique', 'trefle'];
-        const ranks = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R'];
-
-        let deck = [];
-
-        for (let pack = 0; pack < 2; pack++)
-        {
-          suits.forEach(suit =>
-          {
-            ranks.forEach(rank =>
-            {
-              deck.push({ suit, rank });
-            });
-          });
-        }
-
-        deck.push({ suit: 'Joker', rank: 'Joker' });
-        deck.push({ suit: 'Joker', rank: 'Joker' });
-
-        return deck;
-      }
-
-      // Shuffle utility
-      function shuffle(array)
-      {
-        for (let i = array.length - 1; i > 0; i--)
-        {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-
-      // Renders hand cards
-      function renderHand(cards)
-      {
-        playerHand.innerHTML = '';
-
-        cards.forEach((card, idx) =>
-        {
-          playerHand.appendChild(createCardElement(card, idx));
+    // AFFICHAGE MAIN CARTE JOUEUR
+    function renderHand() {
+      handContainer.innerHTML = '';
+      cards.forEach((card, idx) => {
+        const cardEl = createEl('div', {
+          className: 'card' + (idx === selectedCardIndex ? ' selected' : ''),
+          'aria-label': `${card.value} de ${card.suit}`,
+          role: 'listitem',
+          style: `color:${card.color}`
         });
 
-        setupDragAndDrop();
-      }
+        let valueEl = createEl('div', { className: 'value', html: card.value });
+        let suitEl = createEl('div', { className: 'suit', html: card.suit });
 
-      // Create card HTML element
-      function createCardElement(card, id)
-      {
-        const div = document.createElement('div');
+        cardEl.appendChild(valueEl);
+        cardEl.appendChild(suitEl);
 
-        div.className = 'card';
-
-        if (card.suit === 'coeur' || card.suit === 'carreau')
-        {
-          div.classList.add('red');
-        }
-
-        div.id = `card-${id}`;
-        div.draggable = true;
-
-        if (card.rank === 'Joker')
-        {
-          div.style.backgroundColor = '#111';
-          div.style.color = '#fde42a';
-          div.style.fontSize = '2.8rem';
-          div.style.textAlign = 'center';
-          div.textContent = '🃏';
-          div.style.lineHeight = '120px';
-          div.style.userSelect = 'none';
-        }
-        else
-        {
-          const top = document.createElement('div');
-          top.textContent = `${card.rank}${getSuitSymbol(card.suit)}`;
-          top.style.fontSize = '1.5rem';
-          top.style.lineHeight = '1.2em';
-
-          const bottom = document.createElement('div');
-          bottom.textContent = top.textContent;
-          bottom.style.fontSize = '1.5rem';
-          bottom.style.lineHeight = '1.2em';
-          bottom.style.transform = 'rotate(180deg)';
-          bottom.style.userSelect = 'none';
-
-          div.style.backgroundColor = '#372e7a';
-          div.style.border = div.classList.contains('red') ? '3px solid #f44a4a' : '3px solid #aaa';
-
-          div.appendChild(top);
-          div.appendChild(bottom);
-        }
-
-        setupDragEvents(div);
-
-        return div;
-      }
-
-      function getSuitSymbol(suit)
-      {
-        switch (suit)
-        {
-          case 'coeur': return '♥';
-          case 'carreau': return '♦';
-          case 'pique': return '♠';
-          case 'trefle': return '♣';
-          default: return '';
-        }
-      }
-
-      function setupDragEvents(card)
-      {
-        card.addEventListener('dragstart', e =>
-        {
-          draggedCard = e.target;
-          draggedCard.classList.add('dragging');
-          e.dataTransfer.effectAllowed = 'move';
-        });
-
-        card.addEventListener('dragend', e =>
-        {
-          draggedCard.classList.remove('dragging');
-          draggedCard = null;
-        });
-      }
-
-      dropZones.forEach(zone =>
-      {
-        zone.addEventListener('dragover', e =>
-        {
-          e.preventDefault();
-          zone.classList.add('drag-over');
-          e.dataTransfer.dropEffect = 'move';
-        });
-
-        zone.addEventListener('dragleave', e =>
-        {
-          zone.classList.remove('drag-over');
-        });
-
-        zone.addEventListener('drop', e =>
-        {
-          e.preventDefault();
-          zone.classList.remove('drag-over');
-
-          if (draggedCard)
-          {
-            zone.appendChild(draggedCard);
-
-            updateXholButton();
+        cardEl.addEventListener('click', () => {
+          if (selectedCardIndex === idx) {
+            selectedCardIndex = null;
+            notify('Carte désélectionnée');
+          } else {
+            selectedCardIndex = idx;
+            notify(`Carte sélectionnée : ${card.value} ${card.suit}`);
           }
+          renderHand();
         });
+
+        handContainer.appendChild(cardEl);
       });
+    }
 
-      playerHand.addEventListener('dragover', e =>
-      {
-        e.preventDefault();
-        playerHand.classList.add('drag-over');
-        e.dataTransfer.dropEffect = 'move';
-      });
+    // NOTIFICATIONS TEMPORAIRES
+    let notifTimeout = null;
+    function notify(text) {
+      notification.textContent = text;
+      notification.classList.add('active');
+      clearTimeout(notifTimeout);
+      notifTimeout = setTimeout(() => {
+        notification.classList.remove('active');
+      }, 3500);
+    }
 
-      playerHand.addEventListener('dragleave', e =>
-      {
-        playerHand.classList.remove('drag-over');
-      });
+    // CHAT
+    chatToggleBtn.addEventListener('click', () => {
+      chatOpen = !chatOpen;
+      chatContainer.toggleAttribute('hidden', !chatOpen);
+      if (chatOpen) chatInput.focus();
+    });
 
-      playerHand.addEventListener('drop', e =>
-      {
-        e.preventDefault();
-        playerHand.classList.remove('drag-over');
+    chatSendBtn.addEventListener('click', () => {
+      sendChatMessage();
+    });
 
-        if (draggedCard)
-        {
-          playerHand.appendChild(draggedCard);
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') sendChatMessage();
+    });
 
-          updateXholButton();
-        }
-      });
+    function sendChatMessage() {
+      let msg = chatInput.value.trim();
+      if (!msg) return;
+      let msgEl = createEl('div', {}, `[Vous] : ${msg}`);
+      chatMessages.appendChild(msgEl);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+    }
 
-      function updateXholButton()
-      {
-        if (playerHand.children.length === 0)
-        {
-          xholBtn.disabled = false;
-          xholBtn.classList.add('enabled');
-        }
-        else
-        {
-          xholBtn.disabled = true;
-          xholBtn.classList.remove('enabled');
-        }
-      }
+    emojiBtn.addEventListener('click', () => {
+      notify('Émoticônes bientôt disponibles !');
+    });
 
-      xholBtn.addEventListener('click', () =>
-      {
-        alert('Xhol déclenché. Implémentez ici la validation complète.');
-      });
+    leaderboardBtn.addEventListener('click', () => {
+      notify('Classement non encore implémenté');
+    });
 
-      document.getElementById('end-game').onclick = e =>
-      {
-        e.preventDefault();
-        switchView('lobby');
-        playerHand.innerHTML = '';
-        dropZones.forEach(zone => zone.innerHTML = '');
-        xholBtn.disabled = true;
-        xholBtn.classList.remove('enabled');
-      };
+    document.getElementById('spin-btn').addEventListener('click', () => notify('Action Spin activée'));
+    document.getElementById('mission-btn').addEventListener('click', () => notify('Vos missions en cours'));
+    document.getElementById('shop-btn').addEventListener('click', () => notify('Boutique ouverte'));
 
-      init();
+    // INITIALISATION ET RENDER
+    function init() {
+      renderPlayers();
+      renderHand();
+      notify('Bienvenue sur la table de jeu immersive !');
+    }
 
-      function init()
-      {
-        users = loadUsers();
+    // REPOSITION AVATARS AU REDIMENSIONNEMENT
+    window.addEventListener('resize', renderPlayers);
 
-        const storedUser = sessionStorage.getItem('mspl_user');
-
-        if (storedUser && (storedUser in users))
-        {
-          currentUser = storedUser;
-          loadProfile();
-          switchView('lobby');
-        }
-        else
-        {
-          switchView('auth');
-        }
-      }
-    })();
+    init();
+  })();
   </script>
 </body>
 </html>
