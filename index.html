@@ -4,24 +4,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Msplomberie - Jeux de Cartes Multijoueur</title>
-
+  <title>Msplomberie Card Game Platform</title>
   <style>
-    /* RESET et styles globaux */
+    /* === Reset and base styles for the platform === */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'Roboto', Arial, sans-serif;
-      background-color: #1b1120;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #150e27;
       color: white;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
     }
 
     a {
@@ -30,707 +32,706 @@
       cursor: pointer;
     }
 
-    /* HEADER commun */
+    button {
+      cursor: pointer;
+    }
+
+    /* === Header common to lobby and game === */
     header {
-      background-color: #2a1f34;
-      padding: 15px 30px;
+      background-color: #2b1d4d;
+      padding: 12px 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 0 12px #5d3e84;
-      color: #e1cfff;
+      box-shadow: 0 0 15px rgba(97, 59, 150, 0.7);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
       user-select: none;
     }
 
-    header .user-info {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    header .user-info img {
+    .user-info img {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 2px solid #ffcf19;
+      border: 2px solid #ebcd45;
       object-fit: cover;
     }
 
-    header .user-info .username {
+    .user-name {
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.15em;
+      color: #f3d451;
     }
 
-    header .user-stats {
+    .user-stats {
       display: flex;
       gap: 12px;
-      font-size: 0.9rem;
-      color: #d7caef;
-      align-items: center;
+      color: #bebaea;
+      font-weight: 600;
     }
 
     nav a {
-      border-radius: 6px;
       margin-left: 20px;
       font-weight: 600;
-      padding: 6px 14px;
-      transition: background 0.3s ease;
-      display: inline-block;
+      padding: 8px 15px;
+      border-radius: 6px;
+      background: #3c2d7b;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      color: #d9d9ff;
+      user-select: none;
     }
 
     nav a:hover,
     nav a:focus {
-      background-color: #ffcf19;
-      color: #230f00;
+      background-color: #f7dc5e;
+      color: #2e270c;
       outline: none;
     }
 
-    /* FORMULAIRES AUTH */
-    #auth-section {
-      min-height: 100vh;
-      background: #170e22;
+    /* === Authentication form container === */
+    #auth-container {
+      flex-grow: 1;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 50px 20px;
-      gap: 24px;
+      background-color: #1a142b;
+      padding: 40px 20px;
+      gap: 40px;
+      flex-direction: column;
+      min-height: 90vh;
     }
 
-    .auth-box {
-      background: #362c51;
-      border-radius: 18px;
-      padding: 36px 34px;
-      width: 360px;
-      max-width: 88vw;
-      box-shadow: 0 5px 38px #4e3d74bb;
-      color: white;
-      user-select: none;
+    .auth-card {
+      background-color: #2e2350;
+      border-radius: 16px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 0 24px rgba(151, 128, 255, 0.5);
+      padding: 36px 30px;
     }
 
-    .auth-box h2 {
+    .auth-card h2 {
+      color: #f8ec71;
       font-weight: 700;
-      font-size: 1.9rem;
-      margin-bottom: 24px;
-      letter-spacing: 0.12rem;
-      color: #ffcf19;
+      font-size: 2em;
+      margin-bottom: 26px;
       text-align: center;
+      text-shadow: 0 0 10px #ffd850a3;
+      user-select: none;
     }
 
     label {
       display: block;
       margin-bottom: 6px;
       font-weight: 600;
-      font-size: 1rem;
-      color: #c6b7f3;
+      color: #ccc9fc;
+      user-select: none;
     }
 
     input[type="email"],
     input[type="password"] {
       width: 100%;
-      padding: 12px 14px;
-      font-size: 1rem;
-      border-radius: 6px;
+      border-radius: 8px;
       border: none;
-      outline-offset: 2px;
-      outline-color: #a792e0;
-      margin-bottom: 18px;
-      font-family: inherit;
+      padding: 12px 14px;
+      margin-bottom: 22px;
+      font-size: 1.05em;
+      background-color: #3a2e74;
+      color: #eeebff;
+      transition: background-color 0.3s ease;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      background-color: #4e408d;
     }
 
     input[type="submit"],
-    button.link-btn {
+    button.switch-view {
       width: 100%;
-      background: #ffcf19;
+      background-color: #f7d54e;
       border: none;
-      color: #311a04;
-      font-weight: 700;
-      font-size: 1.15rem;
-      border-radius: 10px;
       padding: 14px 0;
-      margin-top: 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1.15em;
+      color: #302900;
+      box-shadow: 0 0 15px #f8ee8caa;
       user-select: none;
+      transition: background-color 0.3s ease;
+      margin-top: 12px;
     }
 
     input[type="submit"]:hover,
-    button.link-btn:hover {
-      background-color: #fff055;
+    button.switch-view:hover {
+      background-color: #fff182;
     }
 
-    button.link-btn {
-      background: none;
-      color: #99afff;
-      text-decoration: underline;
-      margin-top: 14px;
-      padding: 0;
-      border-radius: 0;
-      font-weight: 600;
-      cursor: pointer;
-      user-select: text;
-    }
-
-    .error-msg {
-      color: #ff6060;
+    .error-msg,
+    .success-msg {
+      margin-top: 8px;
       font-weight: 700;
-      font-size: 0.9rem;
+      font-size: 0.9em;
+      color: #ff4836;
+      user-select: none;
       min-height: 20px;
-      margin-bottom: 6px;
     }
 
     .success-msg {
-      color: #84ff84;
-      font-weight: 700;
-      font-size: 0.9rem;
-      margin-top: 6px;
+      color: #55ff60;
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    /* LOBBY / MODE DE JEU */
-    main#modes {
-      flex: 1;
-      background: #120817;
-      padding: 50px 20px;
+    /* === Lobby styles === */
+    #lobby {
+      flex-grow: 1;
+      background: linear-gradient(135deg, #2b184a, #13111d);
+      padding: 40px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 90vh;
     }
 
-    .modes-header {
+    #lobby header {
       width: 100%;
-      max-width: 720px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      max-width: 1000px;
       margin-bottom: 40px;
     }
 
-    .user-info-lobby {
+    #lobby .user-info {
+      font-size: 1.1em;
+    }
+
+    #lobby .modes {
       display: flex;
-      gap: 15px;
-      align-items: center;
-    }
-
-    .user-info-lobby img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #ffcf19;
-      object-fit: cover;
-    }
-
-    .user-info-lobby .username {
-      font-weight: 700;
-      font-size: 1.25rem;
-      color: #ffc75e;
-    }
-
-    .user-stats-lobby {
-      display: flex;
-      gap: 15px;
-      font-size: 0.95rem;
-      color: #d3c7f8;
-      align-items: center;
-      user-select: none;
-    }
-
-    nav#lobby-nav a {
-      background: #382a5c;
-      color: #fff;
-      text-decoration: none;
-      font-weight: 700;
-      padding: 10px 24px;
-      margin-left: 15px;
-      border-radius: 10px;
-      transition: background-color 0.3s ease;
-    }
-
-    nav#lobby-nav a:hover {
-      background-color: #ffc75e;
-      color: #1a0700;
-    }
-
-    .modes {
-      max-width: 720px;
-      width: 100%;
-      display: flex;
+      gap: 50px;
       justify-content: center;
-      gap: 60px;
+      max-width: 1000px;
+      width: 100%;
     }
 
     .mode-card {
-      background-color: #3a2860;
-      width: 280px;
-      border-radius: 22px;
-      padding: 40px 28px;
-      text-align: center;
-      box-shadow: 0 0 30px #5b43a1aa;
-      border: 2px solid #634b9a;
+      flex: 1 1 250px;
+      background-color: #3c2f70;
+      border-radius: 18px;
+      padding: 40px 30px;
+      box-shadow: 0 0 28px rgba(95, 60, 162, 0.8);
+      color: #e6dcff;
       cursor: pointer;
-      transition: transform 0.3s, border-color 0.3s;
+      text-align: center;
       user-select: none;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
     .mode-card:hover,
     .mode-card:focus {
-      border-color: #ffc75e;
-      transform: scale(1.06);
-      box-shadow: 0 0 48px #ffdb79cc;
+      transform: scale(1.05);
+      box-shadow: 0 0 54px #f7e851aa;
       outline: none;
     }
 
     .mode-card img {
-      height: 80px;
-      margin-bottom: 18px;
-      filter: drop-shadow(0 0 6px #271a54bb);
+      width: 100px;
+      height: 100px;
+      margin-bottom: 24px;
+      pointer-events: none;
       user-select: none;
     }
 
     .mode-title {
-      font-size: 1.8rem;
+      font-size: 1.8em;
       font-weight: 700;
-      color: #ffd964;
-      margin-bottom: 10px;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 18px #ffd964bb;
+      margin-bottom: 12px;
+      color: #fff37e;
+      text-shadow: 0 0 14px #f7e851aa;
     }
 
     .mode-desc {
-      font-size: 1.1rem;
-      color: #d7c7f8;
-      line-height: 1.4;
+      font-size: 1.2em;
+      font-weight: 400;
+      color: #d7d0fc;
+      pointer-events: none;
       user-select: none;
+      line-height: 1.4em;
     }
 
-    /* TABLE DE JEU */
-    main#game {
-      flex: 1;
-      background: #120817;
-      padding: 30px 10px 60px;
-      min-height: 100vh;
+    /* === Game table styles === */
+    #game {
+      flex-grow: 1;
+      background: linear-gradient(135deg, #1b1132, #0d0916);
+      padding: 30px 20px 60px;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 90vh;
       user-select: none;
     }
 
-    main#game header {
+    #game header {
       width: 100%;
-      max-width: 900px;
+      max-width: 1000px;
       margin-bottom: 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      color: #cabdf3;
+      color: #cdc4ff;
+      font-weight: 700;
     }
 
-    main#game header .user-info {
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    #game .user-info {
+      font-size: 1.05em;
     }
 
-    main#game header .user-info img {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      border: 2px solid #ffd964;
-      object-fit: cover;
-    }
-
-    main#game header nav a {
-      color: #e6d8fd;
+    #game nav a {
       font-weight: 600;
-      padding: 8px 14px;
-      background: #3a2a5d;
+      padding: 10px 18px;
       border-radius: 8px;
-      margin-left: 17px;
-      transition: background-color 0.3s ease;
-      cursor: pointer;
+      background-color: #482fa1;
+      color: #ceccff;
       user-select: none;
+      margin-left: 15px;
       text-decoration: none;
     }
 
-    main#game header nav a:hover {
-      background-color: #ffd964;
-      color: #361c00;
+    #game nav a:hover,
+    #game nav a:focus {
+      background-color: #efe52a;
+      color: #281e00;
+      outline: none;
+      cursor: pointer;
     }
 
-    .game-table {
-      background-color: #3a2c58;
-      border-radius: 26px;
-      padding: 36px 32px 56px;
-      max-width: 900px;
-      width: 95vw;
-      box-shadow: 0 0 36px #6d58abcc;
+    #game .game-table {
+      width: 100%;
+      max-width: 1000px;
+      background-color: #3a2f69;
+      border-radius: 20px;
+      padding: 30px 25px 70px;
+      box-shadow: 0 0 40px rgba(255,215,50,0.7);
       display: flex;
       flex-direction: column;
       align-items: center;
+      user-select: none;
     }
 
-    .table-areas {
+    #game .table-zones {
       display: flex;
       justify-content: space-between;
       width: 100%;
-      margin-bottom: 36px;
-      gap: 14px;
+      gap: 20px;
+      margin-bottom: 40px;
+      user-select: none;
     }
 
     .drop-zone {
-      background-color: #512f82;
-      border-radius: 14px;
-      min-height: 140px;
-      flex-grow: 1;
-      padding: 18px 12px;
-      box-shadow: inset 0 0 16px #9169c4aa;
+      flex: 1 1 45%;
+      height: 140px;
+      background: #5d49a3;
+      border-radius: 16px;
+      border: 3px dashed #d8c5ff77;
+      box-shadow: inset 0 0 20px #c9b5ffaa;
       display: flex;
       flex-wrap: nowrap;
-      align-items: center;
       overflow-x: auto;
-      gap: 8px;
-      border: 2px dashed #a788e6;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
+      gap: 15px;
+      padding: 10px 12px;
       cursor: default;
-      user-select: none;
     }
 
     .drop-zone.dragover {
-      background-color: #cca7ff44;
-      border-color: #d3baff;
+      border-color: #fff16dcc;
+      background-color: #fff16d33;
     }
 
-    .player-hand {
+    #game .player-hand {
       width: 100%;
-      max-width: 900px;
-      background-color: #44136f;
+      max-width: 1000px;
+      height: 115px;
+      background: #371f84;
       border-radius: 16px;
-      padding: 16px 14px;
-      box-shadow: 0 3px 14px #573686aa;
-      display: flex;
-      gap: 14px;
+      box-shadow: 0 0 30px rgba(199, 157, 244, .7);
+      padding: 16px;
       overflow-x: auto;
+      white-space: nowrap;
       user-select: none;
       cursor: default;
-      min-height: 110px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
     }
 
     .card {
-      width: 72px;
-      height: 100px;
-      background-color: #160d2a;
-      border-radius: 10px;
-      border: 2px solid transparent;
-      box-shadow: 0 3px 14px rgb(5 5 5 / 0.8);
-      padding: 6px 8px;
+      width: 78px;
+      height: 115px;
+      background-color: #221a38;
+      border-radius: 14px;
+      border: 3px solid transparent;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+      color: white;
       font-weight: 700;
-      color: #fff;
-      user-select: none;
+      padding: 6px 10px;
       cursor: grab;
-      transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      user-select: none;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      flex-shrink: 0;
+      user-drag: element;
     }
 
     .card.red {
-      color: #e44a3a;
+      color: #f4615f;
     }
 
     .card.dragging {
-      opacity: 0.5;
+      opacity: 0.6;
+      border-color: #ffe75e;
+      box-shadow: 0 0 30px #ffe75e;
       cursor: grabbing;
-      box-shadow: 0 0 36px 8px #ffd964;
+      user-select: none;
     }
 
     #xholBtn {
-      margin-top: 30px;
-      background: #ffd964;
-      color: #210;
-      border-radius: 12px;
-      border: none;
-      padding: 16px 70px;
-      font-size: 1.6rem;
+      margin-top: 40px;
+      padding: 18px 60px;
+      font-size: 1.6em;
       font-weight: 800;
-      opacity: 0.45;
+      border-radius: 12px;
+      background-color: #ffe55a;
+      color: #321e00;
+      border: none;
+      opacity: 0.4;
       cursor: not-allowed;
+      box-shadow: 0 0 25px rgba(255,229,90,0.8);
       user-select: none;
-      transition: opacity 0.25s ease;
-      box-shadow: 0 0 18px #ccaaffaa;
+      transition: opacity 0.3s ease;
     }
 
     #xholBtn.enabled {
       opacity: 1;
       cursor: pointer;
-      box-shadow: 0 0 28px 2px #d5bc66ff;
+      box-shadow: 0 0 40px #ffde59;
     }
 
-    /* FOOTER */
+    /* Footer */
     footer {
-      background: #2e2440;
-      padding: 20px;
-      font-size: 1rem;
-      color: #c1b2e5cc;
+      background-color: #3a295b;
+      padding: 22px 20px;
+      font-weight: 600;
+      font-size: 1em;
       text-align: center;
+      color: #c4bbd8;
       user-select: none;
+    }
+
+    /* Scrollbar for hands and drop zones */
+    ::-webkit-scrollbar {
+      height: 9px;
+      width: 9px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #2a1e53;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #6d58ad;
+      border-radius: 12px;
     }
   </style>
 </head>
 
 <body>
-
-  <!-- SECTION AUTHENTIFICATION -->
-  <section id="auth-section">
-    <article id="login-box" class="auth-box">
+  <!-- Authentication container -->
+  <section id="auth-container">
+    <div class="auth-card" id="loginBox">
       <h2>Connexion</h2>
-      <form id="login-form" autocomplete="off" novalidate>
-        <label for="login-email">E-mail</label>
-        <input type="email" id="login-email" autocomplete="username" required />
-        <label for="login-password">Mot de passe</label>
-        <input type="password" id="login-password" autocomplete="current-password" minlength="6" required />
-        <input type="submit" value="Se connecter" />
-        <p id="login-error" class="error-msg" aria-live="polite"></p>
+      <form id="loginForm" autocomplete="off" novalidate>
+        <label for="loginEmail">E-mail</label>
+        <input id="loginEmail" type="email" autocomplete="username" required />
+        <label for="loginPassword">Mot de passe</label>
+        <input id="loginPassword" type="password" autocomplete="current-password" minlength="6" required />
+        <button type="submit">Se connecter</button>
+        <p class="error-msg" id="loginError" aria-live="assertive"></p>
       </form>
-      <button type="button" class="link-btn" onclick="showRegister()">Créer un compte</button>
-    </article>
+      <button class="switch-view" id="showRegisterBtn">Créer un compte</button>
+    </div>
 
-    <article id="register-box" class="auth-box hidden">
+    <div class="auth-card hidden" id="registerBox">
       <h2>Créer un compte</h2>
-      <form id="register-form" autocomplete="off" novalidate>
-        <label for="register-email">E-mail</label>
-        <input type="email" id="register-email" autocomplete="username" required />
-        <label for="register-password">Mot de passe (6 caractères minimum)</label>
-        <input type="password" id="register-password" autocomplete="new-password" minlength="6" required />
-        <input type="submit" value="S'inscrire" />
-        <p id="register-error" class="error-msg" aria-live="polite"></p>
+      <form id="registerForm" autocomplete="off" novalidate>
+        <label for="registerEmail">E-mail</label>
+        <input id="registerEmail" type="email" autocomplete="username" required />
+        <label for="registerPassword">Mot de passe (min. 6 caractères)</label>
+        <input id="registerPassword" type="password" autocomplete="new-password" minlength="6" required />
+        <button type="submit">S'inscrire</button>
+        <p class="error-msg" id="registerError" aria-live="assertive"></p>
       </form>
-      <button type="button" class="link-btn" onclick="showLogin()">Déjà un compte ? Connexion</button>
-    </article>
+      <button class="switch-view" id="showLoginBtn">Déjà un compte ? Connexion</button>
+    </div>
   </section>
 
-  <!-- PAGE LOBBY AVANT JEU -->
-  <main id="modes" class="hidden" aria-label="Lobby jeux de cartes">
+  <!-- Lobby screen -->
+  <main id="lobbyScreen" class="hidden" aria-label="Ecran principal - Lobby">
     <header>
-      <div class="user-info user-info-lobby" role="region" aria-label="Profil utilisateur">
-        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar utilisateur" id="user-avatar" />
-        <span class="username" id="user-pseudo">pseudo</span>
-        <div class="user-stats user-stats-lobby">
-          <span title="Niveau">Niv. <strong id="user-level">1</strong></span>
-          <span title="Gemmes">💎 <strong id="user-gems">35</strong></span>
-          <span title="Pièces">🪙 <strong id="user-coins">70780</strong></span>
-        </div>
+      <div class="user-info" aria-label="Profil utilisateur">
+        <img id="userAvatarLobby" src="" alt="Avatar du joueur" />
+        <span class="user-name" id="userNameLobby"></span>
+        <div class="user-stats" id="userStatsLobby"></div>
       </div>
-
-      <nav id="lobby-nav" aria-label="Menu principal">
-        <a href="#" title="Accueil" onclick="event.preventDefault()">Accueil</a>
-        <a href="#" title="Déconnexion" onclick="logout()">Déconnexion</a>
+      <nav>
+        <a href="#" id="logoutLobbyBtn">Déconnexion</a>
       </nav>
     </header>
-
-    <div class="modes" role="region" aria-label="Choix des modes de jeu">
-      <div class="mode-card" tabindex="0" role="button" aria-label="Mode Casual - jeu pour le plaisir"
-        onclick="startGame('casual')">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="Icône casual" />
+    <section class="modes">
+      <div class="mode-card" tabindex="0" role="button" id="startCasualBtn" aria-label="Mode jeu casual">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616554.png" alt="Mode Casual" />
         <div class="mode-title">Casual</div>
         <div class="mode-desc">Jouez pour le plaisir contre d'autres joueurs !</div>
       </div>
-      <div class="mode-card" tabindex="0" role="button" aria-label="Mode Tournoi - défis et classements"
-        onclick="startGame('tournament')">
-        <img src="https://cdn-icons-png.flaticon.com/512/616/616601.png" alt="Icône tournoi" />
+      <div class="mode-card" tabindex="0" role="button" id="startTournamentBtn" aria-label="Mode tournoi">
+        <img src="https://cdn-icons-png.flaticon.com/512/616/616601.png" alt="Mode Tournoi" />
         <div class="mode-title">Tournoi</div>
         <div class="mode-desc">Relevez des défis et grimpez dans le classement !</div>
       </div>
-    </div>
+    </section>
   </main>
 
-  <!-- PAGE TABLE DE JEU -->
-  <main id="game" class="hidden" role="main" aria-label="Table de jeu">
+  <!-- Game screen -->
+  <main id="gameScreen" class="hidden" aria-label="Ecran principal - Partie de cartes">
     <header>
-      <div class="user-info" role="region" aria-label="Profil utilisateur">
-        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Avatar utilisateur" id="user-avatar-game" />
-        <span class="username" id="user-pseudo-game">pseudo</span>
-        <div class="user-stats">
-          <span title="Niveau">Niv. <strong id="user-level-game">1</strong></span>
-          <span title="Gemmes">💎 <strong id="user-gems-game">35</strong></span>
-          <span title="Pièces">🪙 <strong id="user-coins-game">70780</strong></span>
-        </div>
-
-        <nav aria-label="Menu principal" style="margin-left:auto;">
-          <a href="#" title="Quitter la partie" onclick="quitGame()">Quitter la partie</a>
-          <a href="#" title="Déconnexion" onclick="logout()">Déconnexion</a>
-        </nav>
+      <div class="user-info" aria-label="Profil utilisateur">
+        <img id="userAvatarGame" src="" alt="Avatar du joueur" />
+        <span class="user-name" id="userNameGame"></span>
+        <div class="user-stats" id="userStatsGame"></div>
       </div>
+      <nav>
+        <a href="#" id="quitGameBtn">Quitter la partie</a>
+        <a href="#" id="logoutGameBtn">Déconnexion</a>
+      </nav>
     </header>
-
-    <div class="game-table" id="game-table">
-      <div class="table-areas">
-        <div id="drop1" class="drop-zone" aria-label="Zone de pose 1"></div>
-        <div id="drop2" class="drop-zone" aria-label="Zone de pose 2"></div>
+    <section class="game-table" id="gameTable">
+      <div class="table-zones">
+        <div id="dropZone1" class="drop-zone" aria-label="Zone de dépôt 1"></div>
+        <div id="dropZone2" class="drop-zone" aria-label="Zone de dépôt 2"></div>
       </div>
-
-      <div id="player-hand" class="player-hand" aria-label="Main du joueur">
-        <!-- Cartes injectées ici -->
-      </div>
-
+      <div id="playerHand" class="player-hand" aria-label="Main du joueur"></div>
       <button id="xholBtn" disabled>Xhol</button>
-    </div>
+    </section>
   </main>
 
   <footer>
-    © 2025 Msplomberie - Jeux de Cartes Multijoueur - Jeu sans argent réel, sécurisé & gratuit
+    © 2025 Msplomberie - Jeux de cartes - Tous droits réservés
   </footer>
 
   <script>
-    // ----- Gestion des comptes -----
+    /* --- Utility and User Management --- */
+    const STORAGE_KEY = "msplomberie_users";
+
     function getUsers() {
-      let list = localStorage.getItem("msplomberie_accounts");
-      return list ? JSON.parse(list) : {};
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     }
 
-    function saveUsers(accounts) {
-      localStorage.setItem("msplomberie_accounts", JSON.stringify(accounts));
+    function saveUsers(users) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(users));
     }
 
-    function simpleHash(str) {
+    function hash(str) {
       return btoa(unescape(encodeURIComponent(str)));
     }
 
-    function showRegister() {
-      document.getElementById("login-box").classList.add("hidden");
-      document.getElementById("register-box").classList.remove("hidden");
-      clearErrors();
-    }
+    /* Elements */
+    const authContainer = document.getElementById("auth-container");
+    const loginBox = document.getElementById("loginBox");
+    const registerBox = document.getElementById("registerBox");
+    const lobbyScreen = document.getElementById("lobbyScreen");
+    const gameScreen = document.getElementById("gameScreen");
 
-    function showLogin() {
-      document.getElementById("register-box").classList.add("hidden");
-      document.getElementById("login-box").classList.remove("hidden");
-      clearErrors();
-    }
+    /* Buttons */
+    const showRegisterBtn = document.getElementById("showRegisterBtn");
+    const showLoginBtn = document.getElementById("showLoginBtn");
+    const logoutLobbyBtn = document.getElementById("logoutLobbyBtn");
+    const logoutGameBtn = document.getElementById("logoutGameBtn");
+    const quitGameBtn = document.getElementById("quitGameBtn");
+    const startCasualBtn = document.getElementById("startCasualBtn");
+    const startTournamentBtn = document.getElementById("startTournamentBtn");
+    const xholBtn = document.getElementById("xholBtn");
 
-    function clearErrors() {
-      document.getElementById("login-error").textContent = "";
-      document.getElementById("register-error").textContent = "";
-    }
+    /* Profile displays */
+    const userAvatarLobby = document.getElementById("userAvatarLobby");
+    const userNameLobby = document.getElementById("userNameLobby");
+    const userStatsLobby = document.getElementById("userStatsLobby");
 
-    document.getElementById("login-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const email = this["login-email"].value.trim().toLowerCase();
-      const password = this["login-password"].value;
-      const errorElem = document.getElementById("login-error");
-      errorElem.textContent = "";
-      const users = getUsers();
-      if (!users[email]) {
-        errorElem.textContent = "Compte introuvable.";
-        return;
-      }
-      if (users[email].password !== simpleHash(password)) {
-        errorElem.textContent = "Mot de passe incorrect.";
-        return;
-      }
-      sessionStorage.setItem("activeUser", email);
-      loadUserProfile(email);
-      showMainSection();
+    const userAvatarGame = document.getElementById("userAvatarGame");
+    const userNameGame = document.getElementById("userNameGame");
+    const userStatsGame = document.getElementById("userStatsGame");
+
+    /* Card zones */
+    const dropZone1 = document.getElementById("dropZone1");
+    const dropZone2 = document.getElementById("dropZone2");
+    const playerHand = document.getElementById("playerHand");
+
+    /* Forms */
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    /* Error messages */
+    const loginError = document.getElementById("loginError");
+    const registerError = document.getElementById("registerError");
+
+    /* Game state */
+    let draggedCard = null;
+    let currentDeck = [];
+    let currentUser = null;
+
+    /* Authentication Handlers */
+    showRegisterBtn.addEventListener("click", () => {
+      loginBox.classList.add("hidden");
+      registerBox.classList.remove("hidden");
+      clearMessages();
     });
 
-    document.getElementById("register-form").addEventListener("submit", function (e) {
+    showLoginBtn.addEventListener("click", () => {
+      registerBox.classList.add("hidden");
+      loginBox.classList.remove("hidden");
+      clearMessages();
+    });
+
+    loginForm.addEventListener("submit", e => {
       e.preventDefault();
-      const email = this["register-email"].value.trim().toLowerCase();
-      const password = this["register-password"].value;
-      const errorElem = document.getElementById("register-error");
-      errorElem.textContent = "";
-      if (!email.match(/^\S+@\S+\.\S+$/)) {
-        errorElem.textContent = "Adresse email invalide.";
+      clearMessages();
+      const email = loginForm["loginEmail"].value.trim().toLowerCase();
+      const password = loginForm["loginPassword"].value;
+      const users = getUsers();
+
+      if (!(email in users)) {
+        loginError.textContent = "Utilisateur introuvable.";
+        return;
+      }
+      if (users[email].password !== hash(password)) {
+        loginError.textContent = "Mot de passe incorrect.";
+        return;
+      }
+      currentUser = email;
+      sessionStorage.setItem("mspl_user", email);
+      loadUserProfile();
+      switchTo("lobby");
+    });
+
+    registerForm.addEventListener("submit", e => {
+      e.preventDefault();
+      clearMessages();
+      const email = registerForm["registerEmail"].value.trim().toLowerCase();
+      const password = registerForm["registerPassword"].value;
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        registerError.textContent = "Email invalide.";
         return;
       }
       if (password.length < 6) {
-        errorElem.textContent = "Le mot de passe doit contenir au moins 6 caractères.";
+        registerError.textContent = "Mot de passe trop court (6 caractères minimum).";
         return;
       }
-      let users = getUsers();
-      if (users[email]) {
-        errorElem.textContent = "Ce compte existe déjà.";
+      const users = getUsers();
+      if (email in users) {
+        registerError.textContent = "L'utilisateur existe déjà.";
         return;
       }
       users[email] = {
-        password: simpleHash(password),
+        password: hash(password),
         profile: {
           pseudo: email.split("@")[0],
           niveau: 1,
           gemmes: 35,
-          pieces: 70780,
-        },
+          pieces: 70780
+        }
       };
       saveUsers(users);
-      sessionStorage.setItem("activeUser", email);
-      loadUserProfile(email);
-      showMainSection();
+      currentUser = email;
+      sessionStorage.setItem("mspl_user", email);
+      loadUserProfile();
+      switchTo("lobby");
     });
 
-    // ----- Affichage profil -----
-    function loadUserProfile(email) {
+    /* Switch between views */
+    function switchTo(view) {
+      clearMessages();
+      if (view === "auth") {
+        authContainer.style.display = "flex";
+        lobbyScreen.classList.add("hidden");
+        gameScreen.classList.add("hidden");
+      } else if (view === "lobby") {
+        authContainer.style.display = "none";
+        lobbyScreen.classList.remove("hidden");
+        gameScreen.classList.add("hidden");
+      } else if (view === "game") {
+        authContainer.style.display = "none";
+        lobbyScreen.classList.add("hidden");
+        gameScreen.classList.remove("hidden");
+      }
+    }
+
+    /* Clear messages */
+    function clearMessages() {
+      loginError.textContent = "";
+      registerError.textContent = "";
+    }
+
+    /* Load user data into UI */
+    function loadUserProfile() {
       const users = getUsers();
-      if (!users[email]) return;
-
-      const profile = users[email].profile;
-
-      // Lobby
-      document.getElementById("user-pseudo").textContent = profile.pseudo;
-      document.getElementById("user-level").textContent = profile.niveau;
-      document.getElementById("user-gems").textContent = profile.gemmes;
-      document.getElementById("user-coins").textContent = profile.pieces;
-
-      // Table jeu
-      document.getElementById("user-pseudo-game").textContent = profile.pseudo;
-      document.getElementById("user-level-game").textContent = profile.niveau;
-      document.getElementById("user-gems-game").textContent = profile.gemmes;
-      document.getElementById("user-coins-game").textContent = profile.pieces;
-
+      if (!(currentUser in users)) {
+        switchTo("auth");
+        return;
+      }
+      const profile = users[currentUser].profile;
       const avatarIndex = (profile.pseudo.charCodeAt(0) + profile.niveau) % 99;
 
-      document.getElementById("user-avatar").src =
-        `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
-      document.getElementById("user-avatar-game").src =
-        `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
+      userAvatarLobby.src = `https://randomuser.me/api/portraits/men/${avatarIndex}.jpg`;
+      userNameLobby.textContent = profile.pseudo;
+      userStatsLobby.innerHTML = `Niv: ${profile.niveau} | 💎 ${profile.gemmes} | 💰 ${profile.pieces}`;
+
+      userAvatarGame.src = userAvatarLobby.src;
+      userNameGame.textContent = profile.pseudo;
+      userStatsGame.innerHTML = userStatsLobby.innerHTML;
     }
 
-    // ----- Navigation -----
-    function showMainSection() {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("modes").classList.remove("hidden");
-    }
-
-    function logout() {
-      sessionStorage.removeItem("activeUser");
-      document.getElementById("auth-section").style.display = "flex";
-      document.getElementById("modes").classList.add("hidden");
-      document.getElementById("game").classList.add("hidden");
-      clearErrors();
-    }
-
-    function quitGame() {
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("modes").classList.remove("hidden");
-      clearGameTable();
-    }
-
-    // ----- Chargement session -----
-    window.addEventListener("load", () => {
-      const activeUser = sessionStorage.getItem("activeUser");
-      if (activeUser) {
-        loadUserProfile(activeUser);
-        showMainSection();
-      }
+    /* Logout */
+    logoutLobbyBtn.addEventListener("click", () => {
+      logout();
     });
 
-    // ----- Logique jeu et table -----
+    logoutGameBtn.addEventListener("click", () => {
+      logout();
+    });
+
+    function logout() {
+      sessionStorage.removeItem("mspl_user");
+      currentUser = null;
+      switchTo("auth");
+    }
+
+    /* Game Controls */
+    startCasualBtn.addEventListener("click", () => startGame("casual"));
+    startTournamentBtn.addEventListener("click", () => startGame("tournament"));
+    quitGameBtn.addEventListener("click", () => quitGame());
+    xholBtn.addEventListener("click", () => {
+      alert("Xhol action triggered! Hand validated.");
+      // Implement full validation per rules here
+    });
+
+    /* --- Game Logic --- */
+
     function createDeck() {
       const suits = ['coeur', 'carreau', 'pique', 'trefle'];
       const values = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'V', 'D', 'R'];
-
       let deck = [];
 
       for (let pack = 0; pack < 2; pack++) {
@@ -740,177 +741,162 @@
           }
         }
       }
-
+      // Add only 2 Jokers total for fairness
       deck.push({ value: 'Joker', suit: 'Joker' });
       deck.push({ value: 'Joker', suit: 'Joker' });
 
       return deck;
     }
 
-    function createCardElement(cardObj, id) {
+    let draggedCard = null;
+    const dropZones = [document.getElementById("dropZone1"), document.getElementById("dropZone2")];
+    const playerHand = document.getElementById("playerHand");
+
+    function startGame(mode) {
+      switchTo("game");
+      clearGame();
+      currentDeck = createDeck();
+      const { hand, deck } = dealCards(currentDeck, 14);
+      currentDeck = deck; // remaining after dealing
+      renderHand(hand);
+      updateXholState();
+    }
+
+    function quitGame() {
+      switchTo("lobby");
+      clearGame();
+    }
+
+    function clearGame() {
+      playerHand.innerHTML = "";
+      dropZones.forEach(z => z.innerHTML = "");
+      xholBtn.disabled = true;
+      xholBtn.classList.remove("enabled");
+    }
+
+    /* Distribute cards */
+    function dealCards(deck, count) {
+      deck = deck.sort(() => Math.random() - 0.5);
+      const hand = deck.slice(0, count);
+      const remainder = deck.slice(count);
+      return { hand: hand, deck: remainder };
+    }
+
+    /* Render cards in hand */
+    function renderHand(cards) {
+      playerHand.innerHTML = "";
+      cards.forEach((card, idx) => {
+        const c = createCardElement(card, idx);
+        c.draggable = true;
+        playerHand.appendChild(c);
+      });
+      setupDragAndDrop();
+    }
+
+    /* Create a card element visually */
+    function createCardElement(card, id) {
       const div = document.createElement("div");
       div.classList.add("card");
-      div.setAttribute("draggable", "true");
+      if (card.suit === "coeur" || card.suit === "carreau") div.classList.add("red");
       div.id = `card-${id}`;
 
-      if (cardObj.value === 'Joker') {
+      if (card.value === "Joker") {
         div.style.backgroundColor = "#111";
         div.style.color = "yellow";
-        div.textContent = "🃏";
-        div.style.fontSize = "2.8rem";
+        div.style.fontSize = "2.8em";
         div.style.textAlign = "center";
         div.style.lineHeight = "100px";
-        div.style.userSelect = "none";
+        div.textContent = "🃏";
       } else {
-        let cardColor = '#fff';
-        if (cardObj.suit === 'coeur' || cardObj.suit === 'carreau') {
-          cardColor = '#d33a3a';
-          div.classList.add('red');
-        }
         div.style.backgroundColor = "#28223c";
-        div.style.border = `2px solid ${cardColor}`;
-        div.style.color = cardColor;
+        div.style.border = card.suit === "coeur" || card.suit === "carreau" ? "3px solid #d33" : "3px solid #ccc";
 
         const topLeft = document.createElement("div");
-        topLeft.textContent = `${cardObj.value} ${cardObj.suit === 'coeur' ? '♥' : cardObj.suit === 'carreau' ? '♦' : cardObj.suit === 'pique' ? '♠' : '♣'}`;
-        topLeft.style.fontSize = "1.6rem";
-        topLeft.style.lineHeight = "1.1";
-
-        div.appendChild(topLeft);
+        topLeft.textContent = `${card.value}${card.suit === "coeur" ? "♥" : card.suit === "carreau" ? "♦" : card.suit === "pique" ? "♠" : "♣"}`;
+        topLeft.style.fontSize = "1.4em";
+        topLeft.style.lineHeight = "1.2em";
 
         const bottomRight = document.createElement("div");
         bottomRight.textContent = topLeft.textContent;
-        bottomRight.style.fontSize = "1.6rem";
-        bottomRight.style.alignSelf = "flex-end";
+        bottomRight.style.fontSize = "1.4em";
         bottomRight.style.transform = "rotate(180deg)";
-        bottomRight.style.lineHeight = "1.1";
-        bottomRight.style.userSelect = "none";
+        bottomRight.style.lineHeight = "1.2em";
 
+        div.appendChild(topLeft);
         div.appendChild(bottomRight);
       }
+
       return div;
     }
 
-    let handCardsElements = [];
-
-    function dealInitialCards(deck) {
-      deck = deck.sort(() => Math.random() - 0.5);
-      const hand = deck.slice(0, 14);
-      return { hand, remainingDeck: deck.slice(14) };
-    }
-
-    function renderHandCards(hand) {
-      const handDiv = document.getElementById("player-hand");
-      handDiv.innerHTML = "";
-      handCardsElements = [];
-      hand.forEach((card, idx) => {
-        const cardEl = createCardElement(card, idx);
-        handDiv.appendChild(cardEl);
-        handCardsElements.push(cardEl);
-      });
-      addDragDropListeners();
-    }
-
-    function addDragDropListeners() {
-      handCardsElements.forEach(cardEl => {
-        cardEl.addEventListener("dragstart", dragStart);
-        cardEl.addEventListener("dragend", dragEnd);
+    /* Setup drag and drop logic */
+    function setupDragAndDrop() {
+      const cards = playerHand.querySelectorAll(".card");
+      cards.forEach(card => {
+        card.addEventListener("dragstart", onDragStart);
+        card.addEventListener("dragend", onDragEnd);
       });
 
-      const dropZones = document.querySelectorAll(".drop-zone");
       dropZones.forEach(zone => {
-        zone.addEventListener("dragover", dragOver);
-        zone.addEventListener("drop", dropCard);
-        zone.addEventListener("dragleave", dragLeave);
+        zone.addEventListener("dragover", onDragOver);
+        zone.addEventListener("drop", onDrop);
+        zone.addEventListener("dragleave", onDragLeave);
       });
 
-      const handDiv = document.getElementById("player-hand");
-      handDiv.addEventListener("dragover", dragOver);
-      handDiv.addEventListener("drop", returnToHand);
-      handDiv.addEventListener("dragleave", dragLeave);
+      playerHand.addEventListener("dragover", onDragOver);
+      playerHand.addEventListener("drop", onReturnToHand);
+      playerHand.addEventListener("dragleave", onDragLeave);
     }
 
-    let draggedCard = null;
-
-    function dragStart(e) {
-      draggedCard = this;
-      this.classList.add("dragging");
+    function onDragStart(e) {
+      draggedCard = e.target;
+      e.target.classList.add("dragging");
       e.dataTransfer.effectAllowed = "move";
     }
 
-    function dragEnd(e) {
-      this.classList.remove("dragging");
+    function onDragEnd(e) {
+      draggedCard.classList.remove("dragging");
       draggedCard = null;
     }
 
-    function dragOver(e) {
+    function onDragOver(e) {
       e.preventDefault();
-      this.classList.add("dragover");
+      e.currentTarget.classList.add("dragover");
       e.dataTransfer.dropEffect = "move";
     }
 
-    function dragLeave(e) {
-      this.classList.remove("dragover");
+    function onDragLeave(e) {
+      e.currentTarget.classList.remove("dragover");
     }
 
-    function dropCard(e) {
+    function onDrop(e) {
       e.preventDefault();
-      this.classList.remove("dragover");
+      e.currentTarget.classList.remove("dragover");
       if (draggedCard) {
-        this.appendChild(draggedCard);
-        checkAllCardsPlaced();
+        e.currentTarget.appendChild(draggedCard);
+        updateXholState();
       }
     }
 
-    function returnToHand(e) {
+    function onReturnToHand(e) {
       e.preventDefault();
-      this.classList.remove("dragover");
+      e.currentTarget.classList.remove("dragover");
       if (draggedCard) {
-        this.appendChild(draggedCard);
-        checkAllCardsPlaced();
+        playerHand.appendChild(draggedCard);
+        updateXholState();
       }
     }
 
-    const xholBtn = document.getElementById("xholBtn");
-
-    function checkAllCardsPlaced() {
-      const handDiv = document.getElementById("player-hand");
-      if (handDiv.children.length === 0) {
+    /* Enable Xhol only if all cards are placed */
+    function updateXholState() {
+      const count = playerHand.children.length;
+      if (count === 0) {
         xholBtn.disabled = false;
         xholBtn.classList.add("enabled");
       } else {
         xholBtn.disabled = true;
         xholBtn.classList.remove("enabled");
       }
-    }
-
-    xholBtn.addEventListener("click", () => {
-      alert("Xhol activé : la main est prête !");
-      // Ajoute ici ta logique de contrôle / validation
-    });
-
-    function clearGameTable() {
-      document.getElementById("player-hand").innerHTML = "";
-      document.getElementById("drop1").innerHTML = "";
-      document.getElementById("drop2").innerHTML = "";
-      xholBtn.disabled = true;
-      xholBtn.classList.remove("enabled");
-    }
-
-    function startGame(mode) {
-      document.getElementById("modes").classList.add("hidden");
-      document.getElementById("game").classList.remove("hidden");
-      clearGameTable();
-      const deck = createDeck();
-      const { hand } = dealInitialCards(deck);
-      renderHandCards(hand);
-      checkAllCardsPlaced();
-    }
-
-    function quitGame() {
-      document.getElementById("game").classList.add("hidden");
-      document.getElementById("modes").classList.remove("hidden");
-      clearGameTable();
     }
   </script>
 </body>
