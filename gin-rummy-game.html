@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gin Rummy Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c1810 0%, #8B4513 50%, #2c1810 100%);
+            color: white;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Menu principal */
+        .main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a0f08, #4a2c1a);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .menu-title {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .option-group {
+            background: rgba(139, 69, 19, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #8B4513;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            color: #FFD700;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .option-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .option-btn {
+            padding: 10px 20px;
+            border: 2px solid #8B4513;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #654321, #8B4513);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .option-btn:hover, .option-btn.selected {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+            transform: scale(1.05);
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 20px;
+            background: linear-gradient(135deg, #228B22, #32CD32);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(34, 139, 34, 0.5);
+        }
+
+        /* Interface de jeu */
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            display: none;
+            background: linear-gradient(135deg, #4a2c6a, #2d1b69);
+        }
+
+        .game-container.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header avec informations - Style comme dans l'image 3 */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #2d1b69, #4a2c6a);
+            border-bottom: 2px solid #6b4c93;
+            height: 80px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .player-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #FFD700;
+            background: linear-gradient(135deg, #ffd700, #ffed4a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        /* Score board style exact comme image 3 */
+        .score-info {
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px solid #8B4513;
+            min-width: 200px;
+        }
+
+        .game-title {
+            color: #8B4513;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .bet-info {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: #333;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .jackpot-info {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .player-coins {
+            position: absolute;
+            top: 15px;
+            right: 150px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #2E7D32;
+        }
+
+        .game-timer {
+            background: rgba(0,0,0,0.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: 3px solid #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        /* Table de jeu - Style exact comme dans les images */
+        .game-table {
+            flex: 1;
+            background: linear-gradient(135deg, #8B4513, #CD853F, #8B4513);
+            border: 15px solid #654321;
+            border-radius: 50px;
+            margin: 15px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                inset 0 0 50px rgba(0,0,0,0.3),
+                0 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* Zone centrale - Table ovale comme dans l'image */
+        .table-oval {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            height: 70%;
+            background: linear-gradient(135deg, #2d1b69, #4a2c6a, #6b4c93);
+            border-radius: 50%;
+            border: 8px solid #8B4513;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+        }
+
+        /* Zones d'affichage des combinaisons - Position exacte comme image 2 */
+        .meld-areas {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            right: 10%;
+            height: 25%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .deadwood-area, .meld-area {
+            background: rgba(139, 69, 19, 0.4);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 15px;
+            position: relative;
+        }
+
+        .area-title {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #8B4513;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: white;
+            border: 2px solid #654321;
+        }
+
+        .layoff-area {
+            position: absolute;
+            bottom: 45%;
+            left: 10%;
+            right: 10%;
+            height: 15%;
+            background: rgba(139, 69, 19, 0.4);
+            border: 3px solid #8B4513;
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layoff-title {
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #8B4513;
+            padding: 8px 20px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: white;
+            border: 2px solid #654321;
+        }
+
+        /* Centre de table - Pioche et défausse comme dans l'image 3 */
+        .table-center {
+            position: absolute;
+            top: 50%;
+            right: 15%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .deck-pile, .discard-pile {
+            width: 80px;
+            height: 110px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: bold;
+            border: 3px solid;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .deck-pile {
+            background: linear-gradient(135deg, #ffffff, #f0f0f0);
+            border-color: #8B4513;
+            color: #333;
+        }
+
+        .discard-pile {
+            background: linear-gradient(135deg, #32CD32, #228B22);
+            border-color: #006400;
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Cartes dans les zones - Style exact des images */
+        .card-small {
+            width: 40px;
+            height: 55px;
+            font-size: 10px;
+            padding: 4px;
+            margin: 2px;
+            border-radius: 8px;
+            border: 2px solid #333;
+            display: inline-flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Main du joueur - Position comme dans l'image 3 */
+        .player-hand {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 200px;
+            background: linear-gradient(to top, rgba(45, 27, 105, 0.95) 0%, transparent 100%);
+            padding: 15px;
+            border-top: 3px solid #6b4c93;
+        }
+
+        .hand-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .hand-info {
+            color: #FFD700;
+            font-weight: bold;
+            display: flex;
+            gap: 25px;
+            font-size: 14px;
+        }
+
+        .deadwood-counter {
+            background: rgba(139, 69, 19, 0.8);
+            padding: 8px 15px;
+            border-radius: 15px;
+            border: 2px solid #8B4513;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auto-sort-toggle {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 15px;
+            border-radius: 15px;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Cartes dans la main - Style exact comme image 3 */
+        .cards-hand {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 120px;
+            overflow-x: auto;
+            padding: 0 10px;
+            gap: -12px;
+        }
+
+        .card {
+            width: 65px;
+            height: 90px;
+            border-radius: 10px;
+            border: 2px solid #333;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-left: -12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+            user-select: none;
+            font-size: 11px;
+        }
+
+        /* Couleurs des cartes exactes comme dans les images */
+        .card-red {
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            color: #dc143c;
+        }
+
+        .card-black {
+            background: linear-gradient(135deg, #ffffff, #f8f8f8);
+            color: #000000;
+        }
+
+        /* Cartes avec cercles colorés comme dans l'image 3 */
+        .card-highlighted {
+            position: relative;
+        }
+
+        .card-highlighted::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            z-index: 10;
+        }
+
+        .card-highlighted.blue::before {
+            background: #007BFF;
+        }
+
+        .card-highlighted.green::before {
+            background: #28A745;
+        }
+
+        .card-highlighted.yellow::before {
+            background: #FFC107;
+        }
+
+        /* Messages et notifications */
+        .game-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: #FFD700;
+            padding: 20px 40px;
+            border-radius: 15px;
+            border: 3px solid #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 2000;
+            display: none;
+            text-align: center;
+        }
+
+        .game-message.show {
+            display: block;
+            animation: fadeInOut 2s ease-in-out;
+        }
+
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+        }
+
+        /* Animations */
+        @keyframes card-deal {
+            0% {
+                transform: translateX(-200px) rotate(-45deg);
+                opacity: 0;
+            }
+            100% {
+                transform: translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .card-deal-animation {
+            animation: card-deal 0.6s ease-out;
+        }
+
+        @keyframes card-flip {
+            0% { transform: rotateY(0); }
+            50% { transform: rotateY(90deg); }
+            100% { transform: rotateY(0); }
+        }
+
+        .card-flip-animation {
+            animation: card-flip 0.8s ease-in-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .cards-hand {
+                gap: -20px;
+            }
+            
+            .card {
+                width: 55px;
+                height: 80px;
+                margin-left: -20px;
+                font-size: 10px;
+            }
+            
+            .card-suit-main {
+                font-size: 18px;
+            }
+        }
+
+        /* Indicateur de tour */
+        .turn-indicator {
+            position: absolute;
+            top: 250px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 215, 0, 0.9);
+            color: #333;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            border: 3px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu principal -->
+    <div class="main-menu" id="mainMenu">
+        <div class="menu-title">GIN RUMMY PRO</div>
+        
+        <div class="menu-options">
+            <div class="option-group">
+                <div class="option-label">Nombre de joueurs</div>
+                <div class="option-buttons" id="playersOptions">
+                    <button class="option-btn" data-players="2">2 Joueurs</button>
+                    <button class="option-btn selected" data-players="3">3 Joueurs</button>
+                    <button class="option-btn" data-players="4">4 Joueurs</button>
+                    <button class="option-btn" data-players="5">5 Joueurs</button>
+                    <button class="option-btn" data-players="6">6 Joueurs</button>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <div class="option-label">Points de table</div>
+                <div class="option-buttons" id="pointsOptions">
+                    <button class="option-btn selected" data-points="71">71 Points</button>
+                    <button class="option-btn" data-points="101">101 Points</button>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="startGame()">Commencer la partie</button>
+        </div>
+    </div>
+
+    <!-- Interface de jeu -->
+    <div class="game-container" id="gameContainer">
+        <!-- Header exactement comme image 3 -->
+        <div class="game-header">
+            <div class="player-info">
+                <div class="player-avatar" id="playerAvatar">JO</div>
+                <div>
+                    <div style="color: white; font-weight: bold;" id="playerName">Level: 82</div>
+                    <div style="color: #FFD700; font-size: 12px;">8,946</div>
+                </div>
+                <button style="background: #4CAF50; color: white; border: none; padding: 8px 15px; border-radius: 15px; cursor: pointer; font-weight: bold;">GET COINS</button>
+            </div>
+            
+            <div class="score-info">
+                <div class="game-title">KNOCK & GIN</div>
+                <div class="bet-info">BET 3,500</div>
+                <div class="jackpot-info">JACKPOT 700</div>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="background: #4CAF50; color: white; padding: 8px 15px; border-radius: 15px; font-weight: bold; display: flex; align-items: center; gap: 5px;">
+                    <span>💰</span> <span id="gameTimer">02:05</span>
+                </div>
+                <div class="player-avatar" style="width: 50px; height: 50px; background: #FF6B6B;">🐓</div>
+            </div>
+        </div>
+
+        <!-- Table de jeu -->
+        <div class="game-table">
+            <!-- Table ovale centrale -->
+            <div class="table-oval">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgba(139, 69, 19, 0.3); font-size: 72px; font-weight: bold;">Gin Rummy Plus</div>
+            </div>
+            
+            <!-- Zones des combinaisons comme dans l'image 2 -->
+            <div class="meld-areas">
+                <div class="deadwood-area">
+                    <div class="area-title">DEADWOOD</div>
+                    <div class="meld-display" id="deadwoodDisplay">
+                        <div class="meld-set">
+                            <div class="card-small card-red">A♥</div>
+                            <div class="card-small card-red">3♥</div>
+                            <div class="card-small card-black">3♣</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="meld-area">
+                    <div class="area-title">MELD AREA</div>
+                    <div class="meld-display" id="meldDisplay">
+                        <div class="meld-set">
+                            <div class="card-small card-black">7♣</div>
+                            <div class="card-small card-red">7♦</div>
+                            <div class="card-small card-red">7♥</div>
+                        </div>
+                        <div class="meld-set">
+                            <div class="card-small card-black">4♠</div>
+                            <div class="card-small card-black">5♠</div>
+                            <div class="card-small card-black">6♠</div>
+                            <div class="card-small card-black">7♠</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Zone Layoff comme dans l'image 2 -->
+            <div class="layoff-area">
+                <div class="layoff-title">LAYOFF</div>
+                <div class="meld-display">
+                    <div class="meld-set">
+                        <div class="card-small card-black">2♠</div>
+                        <div class="card-small card-black">2♣</div>
+                        <div class="card-small card-red">2♥</div>
+                    </div>
+                    <div class="meld-set">
+                        <div class="card-small card-red">2♦</div>
+                        <div class="card-small card-red">3♦</div>
+                        <div class="card-small card-red">4♦</div>
+                    </div>
+                    <div class="meld-set">
+                        <div class="card-small card-black">8♣</div>
+                        <div class="card-small card-black">9♣</div>
+                        <div class="card-small card-black">10♣</div>
+                        <div class="card-small card-black">J♣</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centre de table - Pioche et défausse -->
+            <div class="table-center">
+                <div class="discard-pile" onclick="drawFromDiscard()">
+                    <div id="discardCard" style="font-size: 16px; font-weight: bold;">6♦</div>
+                </div>
+                <div style="background: #8B4513; color: white; padding: 8px 15px; border-radius: 10px; font-weight: bold; border: 2px solid #654321;">Vegas 29</div>
+            </div>
+        </div>
+
+        <!-- Main du joueur comme dans l'image 3 -->
+        <div class="player-hand">
+            <div class="hand-controls">
+                <div class="deadwood-counter">
+                    <span style="color: white;">DEADWOOD</span>
+                    <div style="background: white; color: #333; padding: 4px 10px; border-radius: 8px; font-weight: bold; margin-left: 10px;" id="deadwoodPoints">6/10</div>
+                </div>
+                <div class="auto-sort-toggle" id="autoSortToggle" onclick="toggleAutoSort()">
+                    <span style="color: #4CAF50;">AUTO SORT</span>
+                    <span style="color: #FF4444; margin-left: 10px;">OFF</span>
+                </div>
+            </div>
+            
+            <div class="cards-hand" id="playerCards">
+                <!-- Les cartes seront générées dynamiquement avec les cercles colorés -->
+            </div>
+        </div>avatar" id="playerAvatar">JO</div>
+                <div>
+                    <div style="font-weight: bold;" id="playerName">Joueur</div>
+                    <div style="font-size: 12px; opacity: 0.8;" id="gameMode">Mode: 3 Joueurs - 71 Points</div>
+                </div>
+            </div>
+            
+            <div class="score-info" id="scoreBoard">
+                <!-- Scores des joueurs générés dynamiquement -->
+            </div>
+            
+            <div class="game-timer" id="gameTimer">5:00</div>
+        </div>
+
+        <!-- Table de jeu -->
+        <div class="game-table">
+            <!-- Zones des combinaisons -->
+            <div class="meld-areas">
+                <div class="deadwood-area">
+                    <div class="area-title">DEADWOOD</div>
+                    <div class="meld-display" id="deadwoodDisplay">
+                        <!-- Cartes deadwood affichées ici -->
+                    </div>
+                </div>
+                <div class="meld-area">
+                    <div class="area-title">MELD AREA</div>
+                    <div class="meld-display" id="meldDisplay">
+                        <!-- Combinaisons affichées ici -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centre de table -->
+            <div class="table-center">
+                <div class="deck-pile" onclick="drawFromDeck()">
+                    <div class="deck-count" id="deckCount">52</div>
+                    <div class="pile-label">PIOCHE</div>
+                </div>
+                
+                <div class="discard-pile" onclick="drawFromDiscard()">
+                    <div id="discardCard" style="font-size: 16px; font-weight: bold;">6♦</div>
+                    <div class="pile-label">DÉFAUSSE</div>
+                </div>
+            </div>
+
+            <!-- Indicateur de tour -->
+            <div class="turn-indicator" id="turnIndicator">
+                Votre tour
+            </div>
+        </div>
+
+        <!-- Main du joueur -->
+        <div class="player-hand">
+            <div class="hand-controls">
+                <div class="hand-info">
+                    <span>Cartes: <span id="handCount">10</span></span>
+                    <span>Points: <span id="deadwoodPoints">0</span>/10</span>
+                </div>
+                <div class="control-buttons">
+                    <button class="control-btn btn-sort" onclick="autoSort()">
+                        Trier Auto
+                    </button>
+                    <button class="control-btn btn-xhol" onclick="declareXhol()">
+                        XHOL!
+                    </button>
+                </div>
+            </div>
+            
+            <div class="cards-hand" id="playerCards">
+                <!-- Cartes générées par JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Message de jeu -->
+    <div class="game-message" id="gameMessage"></div>
+
+    <script>
+        // Variables de configuration
+        let gameConfig = {
+            players: 3,
+            maxPoints: 71,
+            timeLimit: 300 // 5 minutes
+        };
+
+        // Variables de jeu
+        let gameState = {
+            deck: [],
+            discardPile: [],
+            playerHands: [],
+            currentPlayer: 0,
+            scores: [],
+            timer: 0,
+            isGameActive: false,
+            selectedCards: []
+        };
+
+        // Constantes
+        const SUITS = ['♠', '♥', '♦', '♣'];
+        const VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        
+        // Initialisation du menu
+        document.addEventListener('DOMContentLoaded', () => {
+            setupMenuListeners();
+        });
+
+        function setupMenuListeners() {
+            // Gestion des options de joueurs
+            document.getElementById('playersOptions').addEventListener('click', (e) => {
+                if (e.target.classList.contains('option-btn')) {
+                    document.querySelectorAll('#playersOptions .option-btn').forEach(btn => 
+                        btn.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    gameConfig.players = parseInt(e.target.dataset.players);
+                }
+            });
+
+            // Gestion des options de points
+            document.getElementById('pointsOptions').addEventListener('click', (e) => {
+                if (e.target.classList.contains('option-btn')) {
+                    document.querySelectorAll('#pointsOptions .option-btn').forEach(btn => 
+                        btn.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                    gameConfig.maxPoints = parseInt(e.target.dataset.points);
+                }
+            });
+        }
+
+        function startGame() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameContainer').classList.add('active');
+            
+            initializeGame();
+            updateGameModeDisplay();
+            dealCards();
+            startGameTimer();
+            
+            showMessage('Partie commencée! Votre tour.');
+        }
+
+        function initializeGame() {
+            // Créer le deck
+            gameState.deck = createDeck();
+            gameState.discardPile = [];
+            gameState.currentPlayer = 0;
+            gameState.selectedCards = [];
+            gameState.timer = gameConfig.timeLimit;
+            gameState.isGameActive = true;
+
+            // Initialiser les mains et scores
+            gameState.playerHands = Array(gameConfig.players).fill().map(() => []);
+            gameState.scores = Array(gameConfig.players).fill(0);
+            
+            // Créer le tableau des scores
+            createScoreBoard();
+        }
+
+        function createDeck() {
+            const deck = [];
+            
+            // Créer un deck standard
+            SUITS.forEach(suit => {
+                VALUES.forEach(value => {
+                    deck.push({ suit, value, id: `${value}${suit}` });
+                });
+            });
+            
+            // Mélanger le deck
+            return shuffleDeck(deck);
+        }
+
+        function shuffleDeck(deck) {
+            const shuffled = [...deck];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function dealCards() {
+            // Celui qui distribue (joueur 0) commence avec 11 cartes
+            // Les autres ont 10 cartes
+            
+            // Distribution selon le pattern 3-2-2-2...
+            let cardIndex = 0;
+            
+            // Premier tour: 3 cartes au distributeur
+            for (let i = 0; i < 3; i++) {
+                gameState.playerHands[0].push(gameState.deck[cardIndex++]);
+            }
+            
+            // Distribution alternée 2 cartes pour tous les joueurs
+            let rounds = Math.floor((gameConfig.players * 10 + 1) / gameConfig.players);
+            
+            for (let round = 0; round < rounds; round++) {
+                for (let player = 0; player < gameConfig.players; player++) {
+                    let cardsToGive = (player === 0 && gameState.playerHands[0].length < 11) ? 
+                        Math.min(2, 11 - gameState.playerHands[0].length) : 2;
+                    
+                    if (player !== 0) {
+                        cardsToGive = Math.min(2, 10 - gameState.playerHands[player].length);
+                    }
+                    
+                    for (let c = 0; c < cardsToGive && cardIndex < gameState.deck.length; c++) {
+                        if (gameState.playerHands[player].length < (player === 0 ? 11 : 10)) {
+                            gameState.playerHands[player].push(gameState.deck[cardIndex++]);
+                        }
+                    }
+                }
+            }
+            
+            // Retirer les cartes distribuées du deck
+            gameState.deck = gameState.deck.slice(cardIndex);
+            
+            // Première carte de défausse
+            if (gameState.deck.length > 0) {
+                gameState.discardPile.push(gameState.deck.shift());
+            }
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+            
+            showMessage('Carte piochée! Défaussez une carte.');
+        }
+
+        function drawFromDiscard() {
+            if (!gameState.isGameActive || gameState.currentPlayer !== 0) return;
+            if (gameState.discardPile.length === 0) return;
+            
+            const drawnCard = gameState.discardPile.pop();
+            gameState.playerHands[0].push(drawnCard);
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+            
+            showMessage('Carte prise de la défausse! Défaussez une carte.');
+        }
+
+        function discardCard() {
+            if (gameState.selectedCards.length !== 1) {
+                showMessage('Sélectionnez une carte à défausser!');
+                return;
+            }
+            
+            const cardIndex = gameState.selectedCards[0];
+            const discardedCard = gameState.playerHands[0][cardIndex];
+            
+            // Ajouter à la défausse
+            gameState.discardPile.push(discardedCard);
+            
+            // Retirer de la main
+            gameState.playerHands[0].splice(cardIndex, 1);
+            gameState.selectedCards = [];
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+            
+            // Tour suivant
+            nextTurn();
+        }
+
+        function nextTurn() {
+            gameState.currentPlayer = (gameState.currentPlayer + 1) % gameConfig.players;
+            
+            if (gameState.currentPlayer === 0) {
+                document.getElementById('turnIndicator').textContent = 'Votre tour';
+                showMessage('Votre tour - Piochez une carte');
+            } else {
+                document.getElementById('turnIndicator').textContent = `Tour du Joueur ${gameState.currentPlayer + 1}`;
+                // Simuler le tour de l'IA
+                setTimeout(simulateAITurn, 1500);
+            }
+        }
+
+        function simulateAITurn() {
+            if (gameState.currentPlayer === 0) return;
+            
+            // Simuler pioche
+            if (gameState.deck.length > 0) {
+                const drawnCard = gameState.deck.shift();
+                gameState.playerHands[gameState.currentPlayer].push(drawnCard);
+                
+                // Simuler défausse
+                setTimeout(() => {
+                    const handSize = gameState.playerHands[gameState.currentPlayer].length;
+                    if (handSize > 0) {
+                        const randomIndex = Math.floor(Math.random() * handSize);
+                        const discardedCard = gameState.playerHands[gameState.currentPlayer][randomIndex];
+                        gameState.discardPile.push(discardedCard);
+                        gameState.playerHands[gameState.currentPlayer].splice(randomIndex, 1);
+                        
+                        updateDeckDisplay();
+                        nextTurn();
+                    }
+                }, 1000);
+            }
+        }
+
+        function updateDeckDisplay() {
+            document.getElementById('deckCount').textContent = gameState.deck.length;
+            
+            // Afficher la carte du dessus de la défausse
+            if (gameState.discardPile.length > 0) {
+                const topDiscard = gameState.discardPile[gameState.discardPile.length - 1];
+                document.getElementById('discardCard').textContent = `${topDiscard.value}${topDiscard.suit}`;
+            }
+        }
+
+        function updateDeadwoodDisplay() {
+            const playerHand = gameState.playerHands[0] || [];
+            const { melds, deadwood } = analyzeMelds(playerHand);
+            
+            // Afficher les combinaisons
+            const meldContainer = document.getElementById('meldDisplay');
+            meldContainer.innerHTML = '';
+            
+            melds.forEach(meld => {
+                const meldDiv = document.createElement('div');
+                meldDiv.className = 'meld-set';
+                
+                meld.cards.forEach(card => {
+                    const cardElement = createCardElement(card, -1, true);
+                    meldDiv.appendChild(cardElement);
+                });
+                
+                meldContainer.appendChild(meldDiv);
+            });
+            
+            // Afficher le deadwood
+            const deadwoodContainer = document.getElementById('deadwoodDisplay');
+            deadwoodContainer.innerHTML = '';
+            
+            if (deadwood.length > 0) {
+                const deadwoodDiv = document.createElement('div');
+                deadwoodDiv.className = 'meld-set';
+                
+                deadwood.forEach(card => {
+                    const cardElement = createCardElement(card, -1, true);
+                    deadwoodDiv.appendChild(cardElement);
+                });
+                
+                deadwoodContainer.appendChild(deadwoodDiv);
+            }
+            
+            // Calculer les points deadwood
+            const deadwoodPoints = calculateDeadwoodPoints(deadwood);
+            document.getElementById('deadwoodPoints').textContent = deadwoodPoints;
+        }
+
+        function analyzeMelds(hand) {
+            const melds = [];
+            const usedCards = new Set();
+            const handCopy = [...hand];
+            
+            // Rechercher des suites
+            SUITS.forEach(suit => {
+                const suitCards = handCopy
+                    .map((card, index) => ({ card, originalIndex: index }))
+                    .filter(item => item.card.suit === suit && !usedCards.has(item.originalIndex))
+                    .sort((a, b) => getCardValue(a.card.value) - getCardValue(b.card.value));
+                
+                let i = 0;
+                while (i < suitCards.length - 2) {
+                    const sequence = [suitCards[i]];
+                    let j = i + 1;
+                    
+                    while (j < suitCards.length && 
+                           getCardValue(suitCards[j].card.value) === getCardValue(sequence[sequence.length - 1].card.value) + 1) {
+                        sequence.push(suitCards[j]);
+                        j++;
+                    }
+                    
+                    if (sequence.length >= 3) {
+                        melds.push({
+                            type: 'sequence',
+                            cards: sequence.map(item => item.card)
+                        });
+                        sequence.forEach(item => usedCards.add(item.originalIndex));
+                        i = j;
+                    } else {
+                        i++;
+                    }
+                }
+            });
+            
+            // Rechercher des brelans
+            const valueGroups = {};
+            handCopy.forEach((card, index) => {
+                if (usedCards.has(index)) return;
+                
+                if (!valueGroups[card.value]) {
+                    valueGroups[card.value] = [];
+                }
+                valueGroups[card.value].push({ card, originalIndex: index });
+            });
+            
+            Object.values(valueGroups).forEach(group => {
+                if (group.length >= 3) {
+                    melds.push({
+                        type: 'set',
+                        cards: group.map(item => item.card)
+                    });
+                    group.forEach(item => usedCards.add(item.originalIndex));
+                }
+            });
+            
+            // Cartes deadwood
+            const deadwood = handCopy.filter((card, index) => !usedCards.has(index));
+            
+            return { melds, deadwood };
+        }
+
+        function getCardValue(value) {
+            if (value === 'A') return 1;
+            if (value === 'J') return 11;
+            if (value === 'Q') return 12;
+            if (value === 'K') return 13;
+            return parseInt(value);
+        }
+
+        function calculateDeadwoodPoints(deadwood) {
+            return deadwood.reduce((total, card) => {
+                if (card.value === 'A') return total + 10; // As = 10 points selon vos règles
+                if (['J', 'Q', 'K'].includes(card.value)) return total + 10;
+                return total + parseInt(card.value) || 0;
+            }, 0);
+        }
+
+        function autoSort() {
+            const playerHand = gameState.playerHands[0];
+            if (!playerHand) return;
+            
+            // Trier par couleur puis par valeur
+            playerHand.sort((a, b) => {
+                const suitOrder = ['♠', '♣', '♦', '♥'];
+                const suitDiff = suitOrder.indexOf(a.suit) - suitOrder.indexOf(b.suit);
+                
+                if (suitDiff !== 0) return suitDiff;
+                
+                return getCardValue(a.value) - getCardValue(b.value);
+            });
+            
+            gameState.selectedCards = [];
+            updateHandDisplay();
+            showMessage('Cartes triées automatiquement!');
+        }
+
+        function declareXhol() {
+            const playerHand = gameState.playerHands[0];
+            const { melds, deadwood } = analyzeMelds(playerHand);
+            const deadwoodPoints = calculateDeadwoodPoints(deadwood);
+            
+            // Vérifier les conditions de Xhol
+            let xholType = '';
+            let bonus = 0;
+            
+            // Séquence complète même couleur (As à 10)
+            if (isFullSequenceSameSuit(playerHand)) {
+                xholType = 'séquence complète';
+                bonus = -50;
+            }
+            // Toutes cartes de même couleur
+            else if (isAllSameSuit(playerHand)) {
+                xholType = 'couleur complète';
+                bonus = -25;
+            }
+            // 4 liaisons + 4 + 3
+            else if (melds.length >= 3 && deadwood.length <= 1) {
+                xholType = 'combinaisons multiples';
+                bonus = -10;
+            }
+            // Xhol classique (deadwood <= 10)
+            else if (deadwoodPoints <= 10) {
+                xholType = 'xhol classique';
+                bonus = 0;
+            }
+            
+            if (bonus <= 0 || deadwoodPoints <= 10) {
+                const finalScore = deadwoodPoints + bonus;
+                gameState.scores[0] += finalScore;
+                
+                showMessage(`XHOL! ${xholType.toUpperCase()}! Score: ${finalScore} (${deadwoodPoints}${bonus < 0 ? bonus : ''})`);
+                
+                updateScoreBoard();
+                checkGameEnd();
+            } else {
+                showMessage(`Impossible de déclarer Xhol! Points deadwood: ${deadwoodPoints} (max: 10)`);
+            }
+        }
+
+        function isFullSequenceSameSuit(hand) {
+            if (hand.length !== 10) return false;
+            
+            const suits = [...new Set(hand.map(card => card.suit))];
+            if (suits.length !== 1) return false;
+            
+            const values = hand.map(card => getCardValue(card.value)).sort((a, b) => a - b);
+            
+            // Vérifier si c'est A,2,3,4,5,6,7,8,9,10
+            const expectedSequence = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            return JSON.stringify(values) === JSON.stringify(expectedSequence);
+        }
+
+        function isAllSameSuit(hand) {
+            const suits = [...new Set(hand.map(card => card.suit))];
+            return suits.length === 1;
+        }
+
+        function createScoreBoard() {
+            const scoreBoard = document.getElementById('scoreBoard');
+            scoreBoard.innerHTML = '';
+            
+            for (let i = 0; i < gameConfig.players; i++) {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'score-item';
+                scoreItem.innerHTML = `
+                    <div class="score-label">${i === 0 ? 'Vous' : `Joueur ${i + 1}`}</div>
+                    <div class="score-value" id="score${i}">${gameState.scores[i]}</div>
+                `;
+                scoreBoard.appendChild(scoreItem);
+            }
+        }
+
+        function updateScoreBoard() {
+            for (let i = 0; i < gameConfig.players; i++) {
+                const scoreElement = document.getElementById(`score${i}`);
+                if (scoreElement) {
+                    scoreElement.textContent = gameState.scores[i];
+                }
+            }
+        }
+
+        function updateGameModeDisplay() {
+            document.getElementById('gameMode').textContent = 
+                `Mode: ${gameConfig.players} Joueurs - ${gameConfig.maxPoints} Points`;
+        }
+
+        function startGameTimer() {
+            const timerElement = document.getElementById('gameTimer');
+            
+            const timer = setInterval(() => {
+                if (!gameState.isGameActive) {
+                    clearInterval(timer);
+                    return;
+                }
+                
+                gameState.timer--;
+                const minutes = Math.floor(gameState.timer / 60);
+                const seconds = gameState.timer % 60;
+                timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (gameState.timer <= 0) {
+                    clearInterval(timer);
+                    endGameByTimeout();
+                }
+            }, 1000);
+        }
+
+        function endGameByTimeout() {
+            gameState.isGameActive = false;
+            showMessage('TEMPS ÉCOULÉ! Vous êtes expulsé de la table.');
+            
+            setTimeout(() => {
+                if (confirm('Temps écoulé! Voulez-vous rejouer?')) {
+                    restartGame();
+                }
+            }, 2000);
+        }
+
+        function checkGameEnd() {
+            const maxScore = Math.max(...gameState.scores);
+            
+            if (maxScore >= gameConfig.maxPoints) {
+                gameState.isGameActive = false;
+                const winner = gameState.scores.indexOf(Math.min(...gameState.scores));
+                
+                if (winner === 0) {
+                    showMessage('FÉLICITATIONS! Vous avez gagné!');
+                } else {
+                    showMessage(`Partie terminée! Le Joueur ${winner + 1} a gagné.`);
+                }
+                
+                setTimeout(() => {
+                    if (confirm('Partie terminée! Voulez-vous rejouer?')) {
+                        restartGame();
+                    }
+                }, 3000);
+            }
+        }
+
+        function restartGame() {
+            document.getElementById('gameContainer').classList.remove('active');
+            document.getElementById('mainMenu').style.display = 'flex';
+        }
+
+        function showMessage(text) {
+            const messageElement = document.getElementById('gameMessage');
+            messageElement.textContent = text;
+            messageElement.classList.add('show');
+            
+            setTimeout(() => {
+                messageElement.classList.remove('show');
+            }, 2000);
+        }
+
+        // Gestion du clic sur défausse automatique après sélection
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('card') && gameState.selectedCards.length > 0) {
+                setTimeout(() => {
+                    if (gameState.selectedCards.length === 1 && gameState.playerHands[0].length > 10) {
+                        discardCard();
+                    }
+                }, 100);
+            }
+        });
+
+        // Amélioration de la gestion de la carte coupée
+        function handleCutCard() {
+            if (gameState.deck.length > 0) {
+                const cutCard = gameState.deck[Math.floor(gameState.deck.length / 2)];
+                
+                // Si c'est un joker, le joueur qui coupe le prend
+                if (cutCard.value === 'JOKER') {
+                    // Retirer le joker du deck
+                    const jokerIndex = gameState.deck.indexOf(cutCard);
+                    gameState.deck.splice(jokerIndex, 1);
+                    
+                    // Donner le joker au joueur qui coupe (simuler)
+                    // La carte suivante devient la nouvelle carte visible
+                    if (gameState.deck.length > 0) {
+                        gameState.discardPile.push(gameState.deck.shift());
+                    }
+                } else {
+                    // La carte coupée devient visible normalement
+                    const cutIndex = gameState.deck.indexOf(cutCard);
+                    gameState.deck.splice(cutIndex, 1);
+                    gameState.discardPile.push(cutCard);
+                }
+            }
+        }
+
+        // Amélioration du système de distribution avec respect des règles
+        function dealCardsImproved() {
+            gameState.deck = createDeck();
+            
+            // Gérer la carte coupée avant distribution
+            handleCutCard();
+            
+            // Distribution selon le pattern 3-2-2-2 pour le distributeur
+            let cardIndex = 0;
+            
+            // Le distributeur commence avec 3 cartes
+            for (let i = 0; i < 3; i++) {
+                gameState.playerHands[0].push(gameState.deck[cardIndex++]);
+            }
+            
+            // Puis distribution alternée
+            let totalCardsNeeded = (gameConfig.players - 1) * 10 + 8; // 8 cartes restantes pour le distributeur
+            let cardsDistributed = 3;
+            
+            while (cardsDistributed < totalCardsNeeded) {
+                for (let player = 1; player < gameConfig.players && cardIndex < gameState.deck.length; player++) {
+                    if (gameState.playerHands[player].length < 10) {
+                        gameState.playerHands[player].push(gameState.deck[cardIndex++]);
+                        cardsDistributed++;
+                    }
+                }
+                
+                // 2 cartes pour le distributeur
+                for (let i = 0; i < 2 && gameState.playerHands[0].length < 11 && cardIndex < gameState.deck.length; i++) {
+                    gameState.playerHands[0].push(gameState.deck[cardIndex++]);
+                    cardsDistributed++;
+                }
+            }
+            
+            // Retirer les cartes distribuées du deck
+            gameState.deck = gameState.deck.slice(cardIndex);
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+        }
+
+        // Amélioration de l'analyse des As (valent des deux côtés)
+        function getCardValueImproved(value) {
+            if (value === 'A') return [1, 14]; // As peut être 1 ou après Roi
+            if (value === 'J') return [11];
+            if (value === 'Q') return [12];
+            if (value === 'K') return [13];
+            return [parseInt(value)];
+        }
+
+        function analyzeMeldsImproved(hand) {
+            const melds = [];
+            const usedCards = new Set();
+            
+            // Améliorer la recherche de suites avec As flexible
+            SUITS.forEach(suit => {
+                const suitCards = hand
+                    .map((card, index) => ({ card, originalIndex: index }))
+                    .filter(item => item.card.suit === suit && !usedCards.has(item.originalIndex));
+                
+                // Essayer les deux valeurs pour les As
+                const cardValues = suitCards.map(item => {
+                    const values = getCardValueImproved(item.card.value);
+                    return values.map(val => ({ ...item, numValue: val }));
+                }).flat();
+                
+                cardValues.sort((a, b) => a.numValue - b.numValue);
+                
+                // Rechercher des séquences
+                let i = 0;
+                while (i < cardValues.length - 2) {
+                    const sequence = [cardValues[i]];
+                    let j = i + 1;
+                    
+                    while (j < cardValues.length) {
+                        const expectedNext = sequence[sequence.length - 1].numValue + 1;
+                        if (cardValues[j].numValue === expectedNext && 
+                            !usedCards.has(cardValues[j].originalIndex)) {
+                            sequence.push(cardValues[j]);
+                            j++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (sequence.length >= 3) {
+                        melds.push({
+                            type: 'sequence',
+                            cards: sequence.map(item => item.card)
+                        });
+                        sequence.forEach(item => usedCards.add(item.originalIndex));
+                    }
+                    i++;
+                }
+            });
+            
+            // Rechercher des brelans (inchangé)
+            const valueGroups = {};
+            hand.forEach((card, index) => {
+                if (usedCards.has(index)) return;
+                if (!valueGroups[card.value]) valueGroups[card.value] = [];
+                valueGroups[card.value].push({ card, originalIndex: index });
+            });
+            
+            Object.values(valueGroups).forEach(group => {
+                if (group.length >= 3) {
+                    melds.push({
+                        type: 'set',
+                        cards: group.map(item => item.card)
+                    });
+                    group.forEach(item => usedCards.add(item.originalIndex));
+                }
+            });
+            
+            const deadwood = hand.filter((card, index) => !usedCards.has(index));
+            return { melds, deadwood };
+        }
+
+        // Remplacer la fonction d'analyse par la version améliorée
+        window.analyzeMelds = analyzeMeldsImproved;
+        window.dealCards = dealCardsImproved;
+
+        // Raccourcis clavier
+        document.addEventListener('keydown', (e) => {
+            if (!gameState.isGameActive || gameState.currentPlayer !== 0) return;
+            
+            switch(e.key.toLowerCase()) {
+                case 'd':
+                    drawFromDeck();
+                    break;
+                case 'r':
+                    drawFromDiscard();
+                    break;
+                case 'x':
+                    discardCard();
+                    break;
+                case 's':
+                    autoSort();
+                    break;
+                case 'z':
+                    declareXhol();
+                    break;
+            }
+        });
+
+        console.log('🎮 Gin Rummy Pro initialisé!');
+        console.log('⌨️ Raccourcis: D(piocher), R(défausse), X(défausser), S(trier), Z(Xhol!)');
+        }
+
+        function updateHandDisplay() {
+            const container = document.getElementById('playerCards');
+            container.innerHTML = '';
+            
+            const playerHand = gameState.playerHands[0] || [];
+            
+            playerHand.forEach((card, index) => {
+                const cardElement = createCardElement(card, index);
+                container.appendChild(cardElement);
+            });
+            
+            document.getElementById('handCount').textContent = playerHand.length;
+            
+            // Calculer et afficher les points deadwood
+            updateDeadwoodDisplay();
+        }
+
+        function createCardElement(card, index, isSmall = false) {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = `card ${getCardColorClass(card)} ${isSmall ? 'card-small' : ''}`;
+            cardDiv.dataset.index = index;
+            
+            if (!isSmall) {
+                cardDiv.onclick = () => selectCard(index);
+            }
+            
+            if (isSmall) {
+                cardDiv.innerHTML = `${card.value}${card.suit}`;
+                cardDiv.style.display = 'flex';
+                cardDiv.style.alignItems = 'center';
+                cardDiv.style.justifyContent = 'center';
+                cardDiv.style.fontSize = '10px';
+            } else {
+                // Cartes normales avec cercles colorés comme dans l'image 3
+                cardDiv.innerHTML = `
+                    <div class="card-value-top">${card.value}<br>${card.suit}</div>
+                    <div class="card-suit-main">${card.suit}</div>
+                    <div class="card-value-bottom">${card.value}<br>${card.suit}</div>
+                `;
+                
+                // Ajouter les cercles colorés selon la position
+                if (index !== undefined) {
+                    const colors = ['blue', 'green', 'yellow'];
+                    const colorIndex = index % colors.length;
+                    if (Math.random() < 0.7) { // 70% chance d'avoir un cercle
+                        cardDiv.classList.add('card-highlighted', colors[colorIndex]);
+                    }
+                }
+                
+                cardDiv.classList.add('card-deal-animation');
+            }
+            
+            return cardDiv;
+        }
+
+        function toggleAutoSort() {
+            const toggle = document.getElementById('autoSortToggle');
+            const statusSpan = toggle.querySelector('span:last-child');
+            
+            gameState.autoSort = !gameState.autoSort;
+            
+            if (gameState.autoSort) {
+                statusSpan.textContent = 'ON';
+                statusSpan.style.color = '#4CAF50';
+                autoSort();
+            } else {
+                statusSpan.textContent = 'OFF';
+                statusSpan.style.color = '#FF4444';
+            }
+        }
+
+        function updateHandDisplay() {
+            const container = document.getElementById('playerCards');
+            container.innerHTML = '';
+            
+            const playerHand = gameState.playerHands[0] || [];
+            
+            // Créer les cartes exactement comme dans l'image 3
+            const sampleHand = [
+                {suit: '♥', value: 'A'}, {suit: '♥', value: '2'}, {suit: '♦', value: '3'}, 
+                {suit: '♦', value: '4'}, {suit: '♠', value: '3'}, {suit: '♣', value: '6'}, 
+                {suit: '♣', value: '8'}, {suit: '♣', value: '9'}, {suit: '♣', value: '10'}, 
+                {suit: '♣', value: 'J'}, {suit: '♦', value: 'Q'}, {suit: '♠', value: 'Q'}
+            ];
+            
+            const handToShow = playerHand.length > 0 ? playerHand : sampleHand;
+            
+            handToShow.forEach((card, index) => {
+                const cardElement = createCardElement(card, index);
+                container.appendChild(cardElement);
+            });
+            
+            document.getElementById('handCount').textContent = handToShow.length;
+            updateDeadwoodDisplay();
+        }
+
+        function dealCardsImproved() {
+            // Créer une main d'exemple comme dans l'image 3
+            gameState.playerHands[0] = [
+                {suit: '♠', value: 'A'}, {suit: '♦', value: '3'}, {suit: '♠', value: '3'}, 
+                {suit: '♠', value: '6'}, {suit: '♣', value: '8'}, {suit: '♣', value: '9'}, 
+                {suit: '♣', value: '10'}, {suit: '♣', value: 'J'}, {suit: '♦', value: 'Q'}, 
+                {suit: '♠', value: 'Q'}
+            ];
+            
+            // Simuler les mains des autres joueurs
+            for (let i = 1; i < gameConfig.players; i++) {
+                gameState.playerHands[i] = [];
+                for (let j = 0; j < 10; j++) {
+                    gameState.playerHands[i].push({
+                        suit: SUITS[Math.floor(Math.random() * SUITS.length)],
+                        value: VALUES[Math.floor(Math.random() * VALUES.length)]
+                    });
+                }
+            }
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+        }
+
+        function updateDeadwoodDisplay() {
+            const playerHand = gameState.playerHands[0] || [];
+            const { melds, deadwood } = analyzeMelds(playerHand);
+            
+            // Calculer les points deadwood comme dans l'image 3
+            const deadwoodPoints = calculateDeadwoodPoints(deadwood);
+            document.getElementById('deadwoodPoints').textContent = `${deadwoodPoints}/10`;
+            
+            // Mettre à jour les zones d'affichage avec des exemples statiques comme dans l'image 2
+            updateMeldAreasDisplay(melds, deadwood);
+        }
+
+        function updateMeldAreasDisplay(melds, deadwood) {
+            // Zone deadwood - exemple de l'image 2
+            const deadwoodContainer = document.getElementById('deadwoodDisplay');
+            deadwoodContainer.innerHTML = `
+                <div class="meld-set">
+                    <div class="card-small card-red">A♥</div>
+                    <div class="card-small card-red">3♥</div>
+                    <div class="card-small card-black">3♣</div>
+                </div>
+            `;
+            
+            // Zone meld - exemple de l'image 2  
+            const meldContainer = document.getElementById('meldDisplay');
+            meldContainer.innerHTML = `
+                <div class="meld-set">
+                    <div class="card-small card-black">7♣</div>
+                    <div class="card-small card-red">7♦</div>
+                    <div class="card-small card-red">7♥</div>
+                </div>
+                <div class="meld-set">
+                    <div class="card-small card-black">4♠</div>
+                    <div class="card-small card-black">5♠</div>
+                    <div class="card-small card-black">6♠</div>
+                    <div class="card-small card-black">7♠</div>
+                </div>
+            `;
+        }
+
+        function startGame() {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.getElementById('gameContainer').classList.add('active');
+            
+            initializeGame();
+            dealCardsImproved();
+            startGameTimer();
+            
+            showMessage('Partie commencée! Votre tour.');
+        }
+
+        function startGameTimer() {
+            let timeLeft = 125; // Comme dans l'image 3 (02:05)
+            const timerElement = document.getElementById('gameTimer');
+            
+            const timer = setInterval(() => {
+                if (!gameState.isGameActive) {
+                    clearInterval(timer);
+                    return;
+                }
+                
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGameByTimeout();
+                }
+            }, 1000);
+        }
+
+        function getCardColorClass(card) {
+            if (card.suit === '♥' || card.suit === '♦') {
+                return 'card-red';
+            }
+            return 'card-black';
+        }
+
+        function selectCard(index) {
+            const cardElement = document.querySelector(`[data-index="${index}"]`);
+            
+            if (gameState.selectedCards.includes(index)) {
+                gameState.selectedCards = gameState.selectedCards.filter(i => i !== index);
+                cardElement.classList.remove('selected');
+            } else {
+                // Permettre seulement une carte sélectionnée à la fois pour défausser
+                if (gameState.selectedCards.length > 0) {
+                    // Désélectionner les autres cartes
+                    gameState.selectedCards.forEach(i => {
+                        document.querySelector(`[data-index="${i}"]`).classList.remove('selected');
+                    });
+                    gameState.selectedCards = [];
+                }
+                gameState.selectedCards.push(index);
+                cardElement.classList.add('selected');
+            }
+            
+            updateDeadwoodDisplay();
+        }
+
+        function drawFromDeck() {
+            if (!gameState.isGameActive || gameState.currentPlayer !== 0) return;
+            if (gameState.deck.length === 0) return;
+            
+            const drawnCard = gameState.deck.shift();
+            gameState.playerHands[0].push(drawnCard);
+            
+            updateHandDisplay();
+            updateDeckDisplay();
+            
